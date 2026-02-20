@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>FASE 0 — Corpo & Sensações — Pausa segura para acalmar o corpo</title>
+
+  <style>
+    :root{
+      /* VISUAL: calma fisiológica (não clínico, não “forms”, não fitness, não místico) */
+      --bgA:#f4fbf9;
+      --bgB:#f6f8ff;
+      --bgC:#fbf7ff;
+
+      --paper: rgba(255,255,255,.92);
+      --paper2: rgba(255,255,255,.97);
+
+      --ink:#15181d;
+      --muted:#55606a;
+      --muted2:#768392;
+
+      --line: rgba(214,220,232,.72);
+      --shadow: 0 18px 58px rgba(16,18,26,.12);
+      --shadow2: 0 10px 26px rgba(16,18,26,.08);
+
+      --accent:#3b7c6e;        /* verde-água */
+      --accent2:#2f675c;
+      --accentSoft: rgba(59,124,110,.14);
+
+      --lav:#5e5aa8;
+      --lav2:#4e4a94;
+      --lavSoft: rgba(94,90,168,.14);
+
+      --warn:#8a6a22;
+      --warnSoft: rgba(255,243,216,.92);
+      --warnLine: rgba(234,208,151,.98);
+
+      --ok:#165347;
+      --okSoft: rgba(236,255,248,.96);
+      --okLine: rgba(160,229,205,.98);
+
+      --r: 22px;
+      --r2: 16px;
+      --max: 1120px;
+
+      --focus: rgba(59,124,110,.22);
+
+      --headerH: 68px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font: 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 18% 0%, rgba(59,124,110,.16), transparent 58%),
+        radial-gradient(900px 520px at 86% 10%, rgba(94,90,168,.12), transparent 58%),
+        radial-gradient(900px 520px at 50% 115%, rgba(59,124,110,.10), transparent 55%),
+        linear-gradient(180deg, var(--bgA), var(--bgB) 55%, var(--bgC));
+      padding-top: calc(var(--headerH) + env(safe-area-inset-top));
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 14px 14px 96px; }
+
+    /* Header fixo SEM TAMPA */
+    .topbar{
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+      display:flex; justify-content:center;
+      pointer-events:none;
+    }
+    .topbarInner{
+      pointer-events:auto;
+      width: min(var(--max), calc(100% - 20px));
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      padding: 8px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 210px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(59,124,110,.14);
+    }
+    .brandTxt{ display:flex; flex-direction:column; line-height:1.1; }
+    .brandTxt b{ font-size: 13px; letter-spacing:.2px; }
+    .brandTxt span{ font-size: 12px; color: var(--muted); }
+
+    .actions{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.90);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:13.5px;
+      box-shadow: var(--shadow2);
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ border-color: rgba(59,124,110,.55); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus{ outline:none; box-shadow:0 0 0 4px var(--focus), var(--shadow2); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.lav{
+      background: linear-gradient(180deg, var(--lav), var(--lav2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.62);
+      color: var(--muted);
+    }
+    .btn.icon{ padding:10px 12px; }
+
+    @media (max-width:760px){
+      .brandTxt span{ display:none; }
+      .btn.pdfTxt span{ display:none; }
+      .btn{ padding:10px 12px; }
+    }
+
+    /* Drawer menu */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(10,14,12,.33);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+    }
+    .overlay.on{ opacity:1; pointer-events:auto; }
+    .drawer{
+      position: fixed; top:0; right:0; height:100%;
+      width: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 70;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex; flex-direction:column;
+      padding-top: env(safe-area-inset-top);
+    }
+    .drawer.on{ transform: translateX(0); }
+    .drawerHd{
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 18% 0%, rgba(59,124,110,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .drawerHd .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .drawerHd h3{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .drawerHd p{ margin:8px 0 0; color: var(--muted); font-size:13.2px; }
+    .drawerBd{
+      padding: 12px 16px 16px;
+      display:grid; gap:10px;
+      overflow:auto;
+    }
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.90);
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navItem b{ display:block; }
+    .navItem span{ display:block; margin-top:4px; color: var(--muted); font-size:13px; }
+    .navItem:hover{ border-color: rgba(59,124,110,.45); }
+
+    section[id]{ scroll-margin-top: calc(var(--headerH) + env(safe-area-inset-top) + 14px); }
+
+    .hero{
+      border:1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-60px -50px auto auto;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle at 35% 35%, rgba(59,124,110,.18), transparent 62%);
+      filter: blur(1px);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:12px;
+      align-items:center;
+    }
+    @media (max-width:920px){ .heroGrid{ grid-template-columns: 1fr; } }
+
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.3px; }
+    .hero p{ margin: 8px 0 0; color: var(--muted); max-width: 96ch; font-size: 14.2px; }
+
+    .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.90);
+      color: var(--muted);
+      font-size: 12.8px;
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--paper2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 16% 0%, rgba(59,124,110,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .hd h2{ margin:0; font-size:15px; letter-spacing:.2px; }
+    .meta{ margin-top:6px; font-size:13.4px; color:var(--muted); max-width: 96ch; }
+    .bd{ padding:14px; }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    @media (max-width:920px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      border-radius: var(--r2);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .panel h3{ margin:0 0 8px; font-size:14px; letter-spacing:.15px; }
+    .small{ font-size:13px; color:var(--muted); }
+
+    label{ display:block; font-weight:950; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input, select, textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+    textarea{
+      min-height: 190px;
+      font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    input:focus, select:focus, textarea:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(243,251,249,.86);
+      color: var(--muted);
+      font-size:13.4px;
+    }
+    .hint.warn{
+      background: var(--warnSoft);
+      border-color: var(--warnLine);
+      color: #5c4613;
+    }
+    .hint.ok{
+      background: var(--okSoft);
+      border-color: var(--okLine);
+      color: var(--ok);
+    }
+
+    .pickGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+    @media (max-width:760px){ .pickGrid{ grid-template-columns: 1fr; } }
+
+    .pick{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      user-select:none;
+      transition: border-color .2s ease, transform .05s ease;
+    }
+    .pick:hover{ border-color: rgba(59,124,110,.45); }
+    .pick:active{ transform: translateY(1px); }
+    .pick input{
+      width:auto; box-shadow:none; margin-top:3px;
+      transform:scale(1.12); accent-color: var(--accent);
+    }
+    .pick b{ display:block; }
+    .pick span{ display:block; color:var(--muted); font-size:13px; margin-top:4px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      color: var(--muted);
+      width: fit-content;
+      user-select:none;
+    }
+    .bOk{ background: var(--okSoft); border-color: var(--okLine); color: var(--ok); }
+    .bWarn{ background: var(--warnSoft); border-color: var(--warnLine); color: var(--warn); }
+    .bMid{ background: rgba(245,245,255,.94); border-color: rgba(210,210,245,.94); color: #39356f; }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .resultBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .block{
+      border:1px solid rgba(214,220,232,.70);
+      border-radius: 14px;
+      background: rgba(243,251,249,.72);
+      padding:10px;
+    }
+    .block b{ display:block; }
+    .block .small{ margin-top:4px; }
+
+    .ctaFinal{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .fine{
+      margin-top:12px;
+      color: var(--muted2);
+      font-size: 13.2px;
+    }
+
+    /* “Ilustração” minimalista (sensação de desacelerar) */
+    .illu{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 170px;
+    }
+    svg{ max-width:100%; height:auto; }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="topbar">
+    <div class="topbarInner" id="topbarInner">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brandTxt">
+          <b>Manual da VidA · FASE 0</b>
+          <span>Pausa segura para acalmar o corpo</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn icon" id="btnMenu" type="button" aria-haspopup="dialog" aria-controls="drawer" aria-expanded="false">☰ <span>Menu</span></button>
+        <button class="btn primary pdfTxt" id="btnPDFTop" type="button">⬇️ <span>PDF do dia</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerHd">
+      <div class="row">
+        <h3>Navegação</h3>
+        <button class="btn ghost icon" id="btnCloseMenu" type="button">✕</button>
+      </div>
+      <p>Escolha uma sessão. O menu fecha e você cai no ponto certo.</p>
+    </div>
+    <div class="drawerBd">
+      <div class="navItem" data-go="start">
+        <b>Início</b>
+        <span>O que é + como usar.</span>
+      </div>
+      <div class="navItem" data-go="q">
+        <b>1) Seleções</b>
+        <span>Objetivo + tempo + contexto.</span>
+      </div>
+      <div class="navItem" data-go="res">
+        <b>2) Pausa guiada</b>
+        <span>Passo a passo (curto).</span>
+      </div>
+      <div class="navItem" data-go="summary">
+        <b>Resumo + PDF</b>
+        <span>Texto pronto + baixar PDF.</span>
+      </div>
+      <div class="navItem" id="navPdf">
+        <b>Baixar PDF agora</b>
+        <span>Exporta pausa e resumo.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="start">
+      <div class="heroGrid">
+        <div>
+          <h1>FASE 0 — Corpo & Sensações — Pausa segura para acalmar o corpo</h1>
+          <p>
+            Um micro-sistema para reduzir ativação fisiológica (tensão, alerta, excesso de estímulo) com
+            <b>passos simples</b>. Você escolhe objetivo + tempo, clica em <b>Gerar pausa</b> e recebe um
+            roteiro curto com encerramento claro. No fim: <b>resumo copiável</b> e <b>PDF do dia</b>.
+          </p>
+
+          <div class="chips">
+            <span class="chip">3–10 min</span>
+            <span class="chip">Sem performance</span>
+            <span class="chip">Sem misticismo</span>
+            <span class="chip">Reutilizável</span>
+          </div>
+
+          <div class="hint">
+            Limite: não é diagnóstico e não substitui pré-natal. Se houver falta de ar intensa, dor forte,
+            sangramento ou algo que te assuste, <b>vale validar com profissional</b> (sem pânico).
+          </div>
+        </div>
+
+        <div class="illu" aria-label="Ilustração de desaceleração">
+          <svg viewBox="0 0 520 300" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="rgba(59,124,110,.18)"/>
+                <stop offset="1" stop-color="rgba(94,90,168,.12)"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0" stop-color="#3b7c6e"/>
+                <stop offset="1" stop-color="#2f675c"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="500" height="280" rx="26" fill="url(#g1)" stroke="rgba(214,220,232,.9)"/>
+            <path d="M70 160 C130 90, 220 90, 280 160 C340 230, 430 230, 480 160" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="26" stroke-linecap="round"/>
+            <path d="M95 160 C145 110, 220 110, 270 160 C320 210, 400 210, 455 160" fill="none" stroke="url(#g2)" stroke-width="10" stroke-linecap="round"/>
+            <circle cx="165" cy="125" r="7" fill="#3b7c6e"/>
+            <circle cx="260" cy="160" r="7" fill="#3b7c6e"/>
+            <circle cx="355" cy="195" r="7" fill="#3b7c6e"/>
+            <text x="42" y="265" font-size="14" fill="rgba(85,96,106,.95)" font-family="system-ui, -apple-system, Segoe UI">
+              Objetivo: desacelerar o corpo (simples e curto)
+            </text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELEÇÕES -->
+    <section class="card" id="q">
+      <div class="hd">
+        <h2>1) Selecione (rápido)</h2>
+        <div class="meta">Escolha objetivo + tempo. O botão <b>Gerar pausa</b> fica no final do módulo.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Contexto</h3>
+            <div class="grid2">
+              <div>
+                <label>Semana</label>
+                <input id="week" inputmode="numeric" placeholder="Ex.: 12"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date" placeholder="Ex.: 18/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <label>Onde você está agora</label>
+            <select id="where">
+              <option value="Em casa (ambiente calmo)">Em casa (ambiente calmo)</option>
+              <option value="Em casa (muito estímulo)">Em casa (muito estímulo)</option>
+              <option value="Trabalho / rua (barulho)">Trabalho / rua (barulho)</option>
+              <option value="Na cama (pré-sono)">Na cama (pré-sono)</option>
+              <option value="Outro">Outro</option>
+            </select>
+
+            <div class="hint">
+              Regra: a pausa é <b>curta</b> e termina com um encerramento claro (sem “ficar preso”).
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Prévia</h3>
+            <div id="badge" class="badge bMid">Selecione e gere a pausa (1 clique)</div>
+            <div id="preview" class="small" style="margin-top:10px;">
+              Você vai receber: roteiro curto + foco corporal leve + encerramento + resumo + PDF.
+            </div>
+
+            <div class="footer">
+              <button class="btn" id="btnClear" type="button">Limpar</button>
+              <button class="btn ghost" id="btnGoRes" type="button">Ir para pausa</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Objetivo agora (1 escolha)</h3>
+          <div class="pickGrid" id="goalGrid"></div>
+
+          <div style="height:12px;"></div>
+
+          <h3>Tempo disponível (1 escolha)</h3>
+          <div class="pickGrid" id="timeGrid"></div>
+
+          <div style="height:12px;"></div>
+
+          <h3>Sensação dominante (opcional)</h3>
+          <label class="small">Isso ajuda a ajustar o foco, sem virar “diagnóstico”.</label>
+          <select id="feeling">
+            <option value="">(opcional) escolher sensação</option>
+            <option value="tensão no pescoço/ombros">Tensão no pescoço/ombros</option>
+            <option value="mandíbula travada / apertada">Mandíbula travada / apertada</option>
+            <option value="respiração curta / ansiedade corporal">Respiração curta / ansiedade corporal</option>
+            <option value="mente acelerada">Mente acelerada</option>
+            <option value="corpo cansado mas inquieto">Corpo cansado mas inquieto</option>
+          </select>
+
+          <!-- BOTÃO NO FINAL DO MÓDULO (usabilidade fluida) -->
+          <div class="footer">
+            <button class="btn primary" id="btnGen" type="button">Gerar pausa guiada</button>
+            <button class="btn ghost" id="btnHintScrol
