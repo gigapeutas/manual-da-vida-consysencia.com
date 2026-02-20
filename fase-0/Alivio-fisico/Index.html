@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>FASE 0 — Corpo & Sensações — Alívio físico seguro</title>
+
+  <style>
+    :root{
+      /* Visual específico: “alívio físico” (calmo, limpo, clínico-leve) */
+      --bg1:#f4fbf9;
+      --bg2:#eef7f4;
+      --bg3:#fbeeea;
+
+      --paper: rgba(255,255,255,.90);
+      --paper2: rgba(255,255,255,.96);
+
+      --ink:#14211d;
+      --muted:#4f6a62;
+      --muted2:#6f857e;
+
+      --line: rgba(192,224,214,.85);
+      --shadow: 0 18px 58px rgba(10,20,16,.12);
+      --shadow2: 0 10px 26px rgba(10,20,16,.08);
+
+      --accent:#2b8b7e;      /* teal */
+      --accent2:#227266;
+      --accentSoft: rgba(43,139,126,.14);
+
+      --warm:#d07b6a;        /* toque humano */
+      --warmSoft: rgba(208,123,106,.14);
+
+      --okBg: rgba(232,252,244,.95);
+      --okLine: rgba(160,229,205,.98);
+      --okInk:#165347;
+
+      --midBg: rgba(255,247,232,.95);
+      --midLine: rgba(244,214,156,.96);
+      --midInk:#6d4b13;
+
+      --talkBg: rgba(245,241,255,.95);
+      --talkLine: rgba(216,199,255,.98);
+      --talkInk:#33235f;
+
+      --r: 20px;
+      --r2: 16px;
+      --max: 1120px;
+
+      --focus: rgba(43,139,126,.28);
+      --headerH: 64px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font: 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 480px at 18% 0%, rgba(43,139,126,.18), transparent 55%),
+        radial-gradient(900px 520px at 86% 20%, rgba(208,123,106,.14), transparent 58%),
+        radial-gradient(900px 520px at 50% 110%, rgba(43,139,126,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+      padding-top: calc(var(--headerH) + env(safe-area-inset-top));
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 14px 14px 96px; }
+
+    /* Header */
+    .topbar{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+      display:flex; justify-content:center;
+      pointer-events:none;
+    }
+    .topbarInner{
+      pointer-events:auto;
+      width: min(var(--max), calc(100% - 20px));
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      padding: 8px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 190px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(43,139,126,.14);
+    }
+    .brandTxt{ display:flex; flex-direction:column; line-height:1.1; }
+    .brandTxt b{ font-size: 13px; letter-spacing:.2px; }
+    .brandTxt span{ font-size: 12px; color: var(--muted); }
+
+    .actions{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.90);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:13.5px;
+      box-shadow: var(--shadow2);
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ border-color: rgba(43,139,126,.65); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus{ outline:none; box-shadow:0 0 0 4px var(--focus), var(--shadow2); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.warm{
+      background: linear-gradient(180deg, var(--warm), #b96455);
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.66);
+      color: var(--muted);
+    }
+    .btn.icon{ padding:10px 12px; }
+
+    @media (max-width:760px){
+      .brandTxt span{ display:none; }
+      .btn.pdfTxt span{ display:none; }
+      .btn{ padding:10px 12px; }
+    }
+
+    /* Drawer */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(10,14,12,.33);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+    }
+    .overlay.on{ opacity:1; pointer-events:auto; }
+    .drawer{
+      position: fixed; top:0; right:0; height:100%;
+      width: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 70;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex; flex-direction:column;
+      padding-top: env(safe-area-inset-top);
+    }
+    .drawer.on{ transform: translateX(0); }
+    .drawerHd{
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(600px 220px at 20% 0%, rgba(43,139,126,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .drawerHd .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .drawerHd h3{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .drawerHd p{ margin:8px 0 0; color: var(--muted); font-size:13.2px; }
+    .drawerBd{
+      padding: 12px 16px 16px;
+      display:grid; gap:10px;
+      overflow:auto;
+    }
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.90);
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navItem b{ display:block; }
+    .navItem span{ display:block; margin-top:4px; color: var(--muted); font-size:13px; }
+    .navItem:hover{ border-color: rgba(43,139,126,.55); }
+
+    /* Conteúdo */
+    section[id]{ scroll-margin-top: calc(var(--headerH) + env(safe-area-inset-top) + 14px); }
+
+    .hero{
+      border:1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-60px -50px auto auto;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle at 35% 35%, rgba(43,139,126,.22), transparent 62%);
+      filter: blur(1px);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:12px;
+      align-items:center;
+    }
+    @media (max-width:920px){
+      .heroGrid{ grid-template-columns: 1fr; }
+    }
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.3px; }
+    .hero p{ margin: 8px 0 0; color: var(--muted); max-width: 96ch; font-size: 14.2px; }
+
+    .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.90);
+      color: var(--muted);
+      font-size: 12.8px;
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--paper2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 15% 0%, rgba(43,139,126,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .hd h2{ margin:0; font-size:15px; letter-spacing:.2px; }
+    .meta{ margin-top:6px; font-size:13.4px; color:var(--muted); max-width: 96ch; }
+    .bd{ padding:14px; }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    @media (max-width:920px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      border-radius: var(--r2);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .panel h3{ margin:0 0 8px; font-size:14px; letter-spacing:.15px; }
+    .small{ font-size:13px; color:var(--muted); }
+
+    label{ display:block; font-weight:950; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input, select{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+    input:focus, select:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(245,255,252,.80);
+      color: var(--muted);
+      font-size:13.4px;
+    }
+
+    .pickGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+    @media (max-width:760px){ .pickGrid{ grid-template-columns: 1fr; } }
+
+    .pick{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      user-select:none;
+      transition: border-color .2s ease, transform .05s ease, background .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .pick:hover{ border-color: rgba(43,139,126,.55); }
+    .pick:active{ transform: translateY(1px); }
+    .pick input{ width:auto; box-shadow:none; margin-top:3px; transform:scale(1.12); accent-color: var(--accent); }
+    .pick b{ display:block; }
+    .pick span{ display:block; color:var(--muted); font-size:13px; margin-top:4px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      color: var(--muted);
+      width: fit-content;
+      user-select:none;
+    }
+    .bOk{ background: var(--okBg); border-color: var(--okLine); color: var(--okInk); }
+    .bMid{ background: var(--midBg); border-color: var(--midLine); color: var(--midInk); }
+    .bTalk{ background: var(--talkBg); border-color: var(--talkLine); color: var(--talkInk); }
+
+    .routine{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .step{
+      border:1px solid rgba(192,224,214,.65);
+      border-radius: 14px;
+      background: rgba(245,255,252,.68);
+      padding:10px;
+    }
+    .step b{ display:block; }
+    .step .small{ margin-top:4px; }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .timerBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .timerRead{
+      font-weight:1000;
+      font-size:18px;
+      letter-spacing:.4px;
+    }
+
+    .dontGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width:920px){ .dontGrid{ grid-template-columns: 1fr; } }
+    .dont{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.96);
+      box-shadow: var(--shadow2);
+      padding:12px;
+    }
+
+    textarea{
+      width:100%;
+      min-height: 220px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+
+    .ctaFinal{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .fine{
+      margin-top:12px;
+      color: var(--muted2);
+      font-size: 13.2px;
+    }
+
+    .illu{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 170px;
+    }
+    svg{ max-width:100%; height:auto; }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="topbar">
+    <div class="topbarInner" id="topbarInner">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brandTxt">
+          <b>Manual da VidA · FASE 0</b>
+          <span>Alívio físico seguro (sem virar treino)</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn icon" id="btnMenu" type="button" aria-haspopup="dialog" aria-controls="drawer" aria-expanded="false">☰ <span>Menu</span></button>
+        <button class="btn primary pdfTxt" id="btnPDFTop" type="button">⬇️ <span>PDF do dia</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerHd">
+      <div class="row">
+        <h3>Navegação</h3>
+        <button class="btn ghost icon" id="btnCloseMenu" type="button">✕</button>
+      </div>
+      <p>Escolha uma sessão. O menu fecha e você cai no ponto certo.</p>
+    </div>
+    <div class="drawerBd">
+      <div class="navItem" data-go="start">
+        <b>Início</b>
+        <span>O que é + como usar em 3 minutos.</span>
+      </div>
+      <div class="navItem" data-go="sel">
+        <b>1) Onde dói hoje</b>
+        <span>Escolha 1–2 áreas (máx.).</span>
+      </div>
+      <div class="navItem" data-go="plan">
+        <b>2) Rotina mínima</b>
+        <span>3–7 minutos, segura e simples.</span>
+      </div>
+      <div class="navItem" data-go="dont">
+        <b>3) O que NÃO fazer</b>
+        <span>Evita piora e medo.</span>
+      </div>
+      <div class="navItem" data-go="summary">
+        <b>Resumo + PDF</b>
+        <span>Texto pronto + baixar PDF.</span>
+      </div>
+      <div class="navItem" id="navPdf">
+        <b>Baixar PDF agora</b>
+        <span>Exporta seu plano do dia + limites.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="start">
+      <div class="heroGrid">
+        <div>
+          <h1>FASE 0 — Corpo & Sensações — Alívio físico seguro</h1>
+          <p>
+            Um produto focado em <b>alívio</b> (não “treino”) para desconfortos comuns da gestação:
+            lombar, pelve/quadril, cervical/ombros e tensão geral.
+            Você escolhe <b>onde dói hoje</b>, recebe uma <b>rotina mínima (3–7 min)</b>,
+            e baixa um <b>PDF do dia</b>.
+          </p>
+
+          <div class="chips">
+            <span class="chip">Poucos passos</span>
+            <span class="chip">Sem “forçar”</span>
+            <span class="chip">Mobile-first</span>
+            <span class="chip">PDF curto e legível</span>
+          </div>
+
+          <div class="hint">
+            Limite importante: este material não substitui pré-natal/fisioterapia.
+            Se algo piorar, doer forte, ou te preocupar, <b>vale validar com profissional</b>.
+          </div>
+        </div>
+
+        <!-- Ilustração simples -->
+        <div class="illu" aria-label="Ilustração suave de corpo e alívio">
+          <svg viewBox="0 0 520 300" role="img">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="rgba(43,139,126,.18)"/>
+                <stop offset="1" stop-color="rgba(208,123,106,.16)"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0" stop-color="#2b8b7e"/>
+                <stop offset="1" stop-color="#227266"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="500" height="280" rx="26" fill="url(#g1)" stroke="rgba(192,224,214,.9)"/>
+            <circle cx="150" cy="150" r="86" fill="rgba(255,255,255,.72)"/>
+            <circle cx="358" cy="140" r="110" fill="rgba(255,255,255,.62)"/>
+            <path d="M250 70 C240 95, 260 120, 250 145 C240 170, 260 195, 250 220"
+                  fill="none" stroke="url(#g2)" stroke-width="10" stroke-linecap="round"/>
+            <circle cx="250" cy="110" r="8" fill="#d07b6a"/>
+            <circle cx="250" cy="150" r="8" fill="#d07b6a"/>
+            <circle cx="250" cy="190" r="8" fill="#d07b6a"/>
+            <path d="M335 210 C370 188, 410 190, 450 210" fill="none" stroke="rgba(43,139,126,.65)" stroke-width="6" stroke-linecap="round"/>
+            <path d="M335 230 C370 208, 410 210, 450 230" fill="none" stroke="rgba(43,139,126,.40)" stroke-width="6" stroke-linecap="round"/>
+            <text x="42" y="265" font-size="14" fill="rgba(79,106,98,.95)" font-family="system-ui, -apple-system, Segoe UI">
+              Alívio = movimentos curtos + respiração + pausa
+            </text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELEÇÃO -->
+    <section class="card" id="sel">
+      <div class="hd">
+        <h2>1) Onde dói hoje (escolha 1–2 áreas)</h2>
+        <div class="meta">
+          Menos escolhas = mais execução. Se você marcar 3+, o sistema limita para 2.
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Contexto (opcional)</h3>
+
+            <div class="grid2">
+              <div>
+                <label>Semana</label>
+                <input id="week" inputmode="numeric" placeholder="Ex.: 10"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date" placeholder="Ex.: 18/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <label>Trimestre</label>
+            <select id="tri">
+              <option value="1º trimestre">1º trimestre</option>
+              <option value="2º trimestre">2º trimestre</option>
+              <option value="3º trimestre">3º trimestre</option>
+            </select>
+
+            <div class="hint">
+              Regra do kit: <b>movimento suave não deve doer</b>. Se doer forte, pare.
+              O objetivo é aliviar, não “aguentar”.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Seu plano do dia (gerado)</h3>
+            <div id="badge" class="badge bMid">Selecione 1–2 áreas para gerar a rotina</div>
+            <div id="planPreview" class="small" style="margin-top:10px;">
+              Dica: escolha a área que mais te atrapalha agora. O plano fica curto de propósito.
+            </div>
+
+            <div class="footer">
+              <button class="btn" id="btnClear" type="button">Limpar</button>
+              <button class="btn ghost" id="btnGoPlan" type="button">Ir para rotina</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Seleção</h3>
+          <div class="pickGrid" id="pickGrid"></div>
+
+          <!-- ✅ BOTÃO AGORA FICA ABAIXO DAS SELEÇÕES -->
+          <div class="footer">
+            <button class="btn primary" id="btnBuild" type="button">Gerar rotina mínima</button>
+            <button class="btn ghost" id="btnHintScroll" type="button">Ver rotina gerada</button>
+          </div>
+
+          <div class="hint">
+            Fluxo recomendado: selecione 1–2 áreas → clique em <b>Gerar rotina mínima</b> → execute 1 vez.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLANO -->
+    <section class="card" id="plan">
+      <div class="hd">
+        <h2>2) Rotina mínima (3–7 min)</h2>
+        <div class="meta">
+          Execução simples. Faça uma vez. Se aliviar, <b>pare</b>. Se não aliviar, <b>não insista</b>.
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Rotina de hoje</h3>
+            <div id="routineBox" class="routine">
+              <div class="small">Gere a rotina no passo 1. Ela aparecerá aqui.</div>
+            </div>
+
+            <div class="footer">
+              <button class="btn warm" id="btnStartTimer" type="button">▶ Iniciar 5 min</button>
+              <button class="btn" id="btnPauseTimer" type="button">⏸ Pausar</button>
+              <button class="btn ghost" id="btnResetTimer" type="button">↺ Zerar</button>
+            </div>
+
+            <div class="timerBox" style="margin-top:10px;">
+              <div>
+                <div class="small">Cronômetro opcional</div>
+                <div class="timerRead" id="timerRead">05:00</div>
+              </div>
+              <div class="small" style="max-width:420px;">
+                Use só se ajudar você a <b>não prolongar</b>. O kit é “pouco, bem feito”.
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Sinais de ajuste (sem pânico)</h3>
+            <div class="routine">
+              <div class="step">
+                <b>Se aliviar:</b>
+                <div class="small">pare ali mesmo. O objetivo foi atingido.</div>
+              </div>
+              <div class="step">
+                <b>Se ficar igual:</b>
+                <div class="small">não force. Troque por descanso/posição confortável e reavalie mais tarde.</div>
+              </div>
+              <div class="step">
+                <b>Se piorar / doer forte:</b>
+                <div class="small">pare e considere validar com profissional. Isso não é “falha sua”.</div>
+              </div>
+            </div>
+
+            <div class="hint">
+              Resultado esperado mensurável: “alívio leve/moderado” OU “clareza de que não é para insistir”.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NÃO FAZER -->
+    <section class="card" id="dont">
+      <div class="hd">
+        <h2>3) O que NÃO fazer (isso aumenta segurança)</h2>
+        <div class="meta">
+          Este bloco evita exagero e reduz medo.
+        </div>
+      </div>
+      <div class="bd">
+        <div class="dontGrid">
+          <div class="dont">
+            <div class="badge bOk">Evite “forçar”</div>
+            <ul>
+              <li>Alongamento profundo até “puxar forte”.</li>
+              <li>Prender respiração.</li>
+              <li>“Dor = está funcionando”.</li>
+              <li>Fazer 20 minutos só porque “tem que”.</li>
+            </ul>
+          </div>
+          <div class="dont">
+            <div class="badge bMid">Evite “internet avançada”</div>
+            <ul>
+              <li>Sequências longas de yoga/treino sem supervisão.</li>
+              <li>Movimentos que exigem equilíbrio difícil.</li>
+              <li>Repetir algo que piorou “para acostumar”.</li>
+              <li>Comparar seu corpo com vídeos/perfis.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="hint">
+          Se você quiser ampliar: isso deve ser com profissional (personalização). O kit é alívio curto e seguro.
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUMO + PDF -->
+    <section class="card" id="summary">
+      <div class="hd">
+        <h2>Resumo do dia + PDF</h2>
+        <div class="meta">Registro curto do que você fez hoje. Economiza energia e conversa confusa.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Gerar resumo</h3>
+            <div class="footer" style="margin-top:0;">
+              <button class="btn primary" id="btnGenSummary" type="button">Gerar resumo do dia</button>
+              <button class="btn" id="btnCopy" type="button">Copiar</button>
+              <button class="btn warm" id="btnPDFHere" type="button">⬇ Baixar PDF do dia</button>
+            </div>
+
+            <div class="hint">
+              O PDF inclui: seleção, rotina, “não fazer” e registro do dia. Sem caracteres que quebram o PDF.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Resumo (copiável)</h3>
+            <textarea id="out" readonly placeholder="Clique em “Gerar resumo do dia”..."></textarea>
+          </div>
+        </div>
+
+        <div class="ctaFinal">
+          <div class="small">
+            Se você só quer salvar tudo organizado, baixe o PDF completo do dia aqui:
+          </div>
+          <button class="btn primary" id="btnPDFFinal" type="button">Baixar PDF do dia</button>
+        </div>
+
+        <div class="fine">
+          Limite: não substitui pré-natal/fisioterapia. Objetivo: aliviar desconforto comum com rotina mínima e segura.
+        </div>
+      </div>
+    </section>
+
+    <!-- Reset -->
+    <section class="hero" style="padding:14px; margin-top:12px;">
+      <div class="footer" style="margin-top:0; justify-content:space-between;">
+        <div class="small">Reset total volta ao topo e limpa seleções, rotina, timer e resumo.</div>
+        <button class="btn" id="btnResetAll" type="button">Resetar (voltar ao topo)</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- jsPDF + AutoTable -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    (function(){
+      // ===== Header height sync (anti-overlap) =====
+      const topbarInner = document.getElementById("topbarInner");
+      function setHeaderH(){
+        const r = topbarInner.getBoundingClientRect();
+        const pillH = Math.ceil(r.height + 22);
+        document.documentElement.style.setProperty("--headerH", pillH + "px");
+      }
+      setHeaderH();
+      window.addEventListener("resize", setHeaderH);
+      window.addEventListener("orientationchange", setHeaderH);
+      if(window.visualViewport){
+        window.visualViewport.addEventListener("resize", setHeaderH);
+        window.visualViewport.addEventListener("scroll", setHeaderH);
+      }
+      setTimeout(setHeaderH, 120);
+
+      // ===== Drawer =====
+      const overlay = document.getElementById("overlay");
+      const drawer = document.getElementById("drawer");
+      const btnMenu = document.getElementById("btnMenu");
+      const btnCloseMenu = document.getElementById("btnCloseMenu");
+
+      function openMenu(){
+        overlay.hidden = false;
+        overlay.classList.add("on");
+        drawer.classList.add("on");
+        drawer.setAttribute("aria-hidden","false");
+        btnMenu.setAttribute("aria-expanded","true");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMenu(){
+        overlay.classList.remove("on");
+        drawer.classList.remove("on");
+        drawer.setAttribute("aria-hidden","true");
+        btnMenu.setAttribute("aria-expanded","false");
+        document.body.style.overflow = "";
+        setTimeout(()=>{ overlay.hidden = true; }, 200);
+      }
+      btnMenu.addEventListener("click", ()=>{
+        const expanded = btnMenu.getAttribute("aria-expanded")==="true";
+        expanded ? closeMenu() : openMenu();
+      });
+      btnCloseMenu.addEventListener("click", closeMenu);
+      overlay.addEventListener("click", closeMenu);
+      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeMenu(); });
+
+      document.querySelectorAll(".navItem[data-go]").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.dataset.go;
+          closeMenu();
+          setTimeout(()=> document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"}), 60);
+        });
+      });
+      document.getElementById("navPdf").addEventListener("click", ()=>{
+        closeMenu();
+        setTimeout(()=> downloadPDF(), 80);
+      });
+
+      // ===== Defaults date =====
+      const dateEl = document.getElementById("date");
+      const weekEl = document.getElementById("week");
+      const triEl  = document.getElementById("tri");
+      (function initDate(){
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        if(!dateEl.value) dateEl.value = `${dd}/${mm}/${yy}`;
+      })();
+
+      // ===== Data: areas + routines =====
+      const areas = [
+        {
+          id:"lombar",
+          title:"Lombar (parte baixa das costas)",
+          desc:"Peso e postura mudam. A rotina é de alívio leve (sem aprofundar).",
+          tag:"Alívio postural",
+          routines:[
+            { name:"Respiração + descarregar lombar", how:"Sente com apoio nas costas. Inspire 4s, solte 6s. Ao soltar o ar, relaxe ombros e deixe a lombar encostar.", time:"1–2 min", note:"Se tiver tontura, reduza a profundidade da respiração." },
+            { name:"Inclinação pélvica suave (sentada)", how:"Sentada, faça micro-movimento: enrola e desenrola a pelve bem pequeno, sem dor.", time:"60–90 s", note:"Movimento curto. Não é exercício de força." },
+            { name:"Posição de descanso (lado + travesseiro)", how:"Deite de lado com travesseiro entre joelhos. Ajuste até sentir soltar.", time:"1–2 min", note:"Se aliviar, pare aí. Já valeu." }
+          ]
+        },
+        {
+          id:"pelve",
+          title:"Pelve / Quadril",
+          desc:"O valor aqui é aliviar tensão, não alongar profundo.",
+          tag:"Soltar tensão",
+          routines:[
+            { name:"Respiração lateral (costelas)", how:"Mão nas costelas. Inspire para abrir para os lados, solte longo. Sem prender ar.", time:"1–2 min", note:"Isso reduz proteção muscular." },
+            { name:"Balanço de quadril (em pé com apoio)", how:"Segure em uma cadeira/parede. Faça balanço mínimo para os lados, confortável.", time:"60–90 s", note:"Sem amplitude grande." },
+            { name:"Pelve neutra (pausa)", how:"Sente e encontre uma posição neutra (nem muito arqueada, nem muito encolhida). Fique.", time:"1–2 min", note:"A pausa é parte da técnica." }
+          ]
+        },
+        {
+          id:"cervical",
+          title:"Cervical / Ombros",
+          desc:"Tensão sobe para a nuca. Aqui é soltar e reduzir carga.",
+          tag:"Soltar ombros",
+          routines:[
+            { name:"Soltar ombros (queda consciente)", how:"Inspire. Ao soltar, deixe os ombros caírem 1 cm. Repita lento.", time:"60–90 s", note:"Sem girar rápido." },
+            { name:"Pescoço: olhar diagonal", how:"Olhe levemente para a diagonal (como se lesse um canto). Volte. Troque lado.", time:"60 s", note:"Movimento pequeno e suave." },
+            { name:"Autoapoio (mãos na nuca)", how:"Mãos sustentando a nuca, cotovelos relaxados. Respire e solte mandíbula.", time:"1–2 min", note:"Se aliviar, finalize." }
+          ]
+        },
+        {
+          id:"pernas",
+          title:"Pernas (peso/cansaço)",
+          desc:"Objetivo: aliviar sensação de peso, não trabalhar perna.",
+          tag:"Leveza",
+          routines:[
+            { name:"Elevar pés (pausa)", how:"Sente e eleve pés em um apoio (banquinho/almofada).", time:"2 min", note:"A pausa é a ação." },
+            { name:"Movimento de tornozelo", how:"Ponta do pé para cima e para baixo bem suave, sem esforço.", time:"60–90 s", note:"Se cãibra, reduza." },
+            { name:"Respiração + alongar mínimo", how:"Inspire curto, solte longo. Alongue a perna só até confortável, sem puxar.", time:"60–90 s", note:"Sem forçar amplitude." }
+          ]
+        },
+        {
+          id:"tensao",
+          title:"Tensão geral (corpo travado)",
+          desc:"Quando tudo parece pesado. A saída é reduzir ativação, não resolver tudo.",
+          tag:"Desacelerar",
+          routines:[
+            { name:"Respiração 4–6 (leve)", how:"Inspire 4s, solte 6s. Se ficar incômodo, volte ao ritmo natural.", time:"2 min", note:"Sem competir." },
+            { name:"Escaneamento corporal simples", how:"Observe 3 pontos: rosto, ombros, barriga. Em cada um, solte 5% da tensão.", time:"1–2 min", note:"Pequeno é suficiente." },
+            { name:"Pausa de conforto", how:"Escolha uma posição confortável (sentada/decúbito lateral) e fique.", time:"1–2 min", note:"Se aliviar, finalize." }
+          ]
+        }
+      ];
+
+      const pickGrid = document.getElementById("pickGrid");
+      const planPreview = document.getElementById("planPreview");
+      const routineBox = document.getElementById("routineBox");
+      const badge = document.getElementById("badge");
+
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      function buildPicks(){
+        pickGrid.innerHTML = areas.map(a=>`
+          <label class="pick" for="chk_${a.id}">
+            <input type="checkbox" id="chk_${a.id}" data-area="${a.id}" />
+            <div>
+              <b>${escapeHtml(a.title)}</b>
+              <span>${escapeHtml(a.desc)}</span>
+              <div class="small" style="margin-top:6px;">
+                <span class="badge" style="border-color:rgba(43,139,126,.35); background:rgba(43,139,126,.10); color:#1a5a51;">
+                  ${escapeHtml(a.tag)}
+                </span>
+              </div>
+            </div>
+          </label>
+        `).join("");
+
+        pickGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=>{
+          chk.addEventListener("change", ()=>{
+            const selected = getSelectedAreas();
+            if(selected.length > 2){
+              chk.checked = false;
+              flashBadge("Selecione no máximo 2 áreas (para manter o plano curto).", "MID");
+              return;
+            }
+            updatePreview();
+          });
+        });
+      }
+      buildPicks();
+
+      function getSelectedAreas(){
+        const ids = [];
+        pickGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=>{
+          if(chk.checked) ids.push(chk.dataset.area);
+        });
+        return ids;
+      }
+
+      function flashBadge(text, kind){
+        badge.textContent = text;
+        badge.classList.remove("bOk","bMid","bTalk");
+        if(kind==="OK") badge.classList.add("bOk");
+        else if(kind==="TALK") badge.classList.add("bTalk");
+        else badge.classList.add("bMid");
+      }
+
+      function updatePreview(){
+        const ids = getSelectedAreas();
+        if(ids.length===0){
+          flashBadge("Selecione 1–2 áreas para gerar a rotina", "MID");
+          planPreview.textContent = "Dica: escolha a área que mais te atrapalha agora. O plano fica curto de propósito.";
+          return;
+        }
+        const names = ids.map(id=>areas.find(a=>a.id===id).title);
+        flashBadge(`Seleção pronta: ${ids.length} área(s)`, "OK");
+        planPreview.innerHTML = `
+          <b>Hoje:</b> ${escapeHtml(names.join(" + "))}<br/>
+          <span class="small">Agora clique em “Gerar rotina mínima” (logo abaixo das seleções).</span>
+        `;
+      }
+      updatePreview();
+
+      function buildRoutine(){
+        const ids = getSelectedAreas();
+        if(ids.length===0){
+          flashBadge("Selecione ao menos 1 área para gerar a rotina.", "MID");
+          routineBox.innerHTML = `<div class="small">Selecione uma área no passo 1 e gere a rotina.</div>`;
+          return null;
+        }
+
+        const selected = ids.map(id=>areas.find(a=>a.id===id));
+
+        routineBox.innerHTML = selected.map(a=>`
+          <div class="step">
+            <b>${escapeHtml(a.title)}</b>
+            <div class="small">${escapeHtml(a.desc)}</div>
+          </div>
+          ${a.routines.map((r,idx)=>`
+            <div class="step">
+              <b>${idx+1}. ${escapeHtml(r.name)} <span class="small">(${escapeHtml(r.time)})</span></b>
+              <div class="small">${escapeHtml(r.how)}</div>
+              <div class="small" style="margin-top:6px; color: var(--muted2);"><b>Nota:</b> ${escapeHtml(r.note)}</div>
+            </div>
+          `).join("")}
+        `).join("");
+
+        flashBadge("Rotina gerada (curta)", "OK");
+        return { selected };
+      }
+
+      // ===== Buttons =====
+      document.getElementById("btnBuild").addEventListener("click", ()=>{
+        const res = buildRoutine();
+        if(res) document.getElementById("plan").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnHintScroll").addEventListener("click", ()=>{
+        document.getElementById("plan").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnGoPlan").addEventListener("click", ()=>{
+        document.getElementById("plan").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnClear").addEventListener("click", ()=>{
+        pickGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=> chk.checked=false);
+        updatePreview();
+        routineBox.innerHTML = `<div class="small">Gere a rotina no passo 1. Ela aparecerá aqui.</div>`;
+        out.value = "";
+        resetTimer(true);
+      });
+
+      // ===== Timer =====
+      const timerRead = document.getElementById("timerRead");
+      let totalSeconds = 5*60;
+      let remaining = totalSeconds;
+      let t = null;
+      let running = false;
+
+      function fmt(sec){
+        const m = String(Math.floor(sec/60)).padStart(2,"0");
+        const s = String(sec%60).padStart(2,"0");
+        return `${m}:${s}`;
+      }
+      function renderTimer(){ timerRead.textContent = fmt(remaining); }
+      function tick(){
+        if(remaining<=0){
+          pauseTimer();
+          remaining = 0;
+          renderTimer();
+          return;
+        }
+        remaining -= 1;
+        renderTimer();
+      }
+      function startTimer(){
+        if(running) return;
+        running = true;
+        t = setInterval(tick, 1000);
+      }
+      function pauseTimer(){
+        running = false;
+        if(t){ clearInterval(t); t=null; }
+      }
+      function resetTimer(){
+        pauseTimer();
+        remaining = totalSeconds;
+        renderTimer();
+      }
+      renderTimer();
+
+      document.getElementById("btnStartTimer").addEventListener("click", startTimer);
+      document.getElementById("btnPauseTimer").addEventListener("click", pauseTimer);
+      document.getElementById("btnResetTimer").addEventListener("click", resetTimer);
+
+      // ===== Summary =====
+      const out = document.getElementById("out");
+
+      function genSummary(){
+        const ids = getSelectedAreas();
+        const selected = ids.map(id=>areas.find(a=>a.id===id));
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+        const tri  = (triEl.value||"").trim();
+
+        if(selected.length===0){
+          out.value = "Resumo — Manual da VidA (FASE 0 — Gestação)\n\nNenhuma área foi selecionada hoje.\n\nDica: selecione 1–2 áreas e gere a rotina mínima.\n\nLimite: não substitui pré-natal/fisioterapia.";
+          return out.value;
+        }
+
+        const lines = [];
+        lines.push("RESUMO — Manual da VidA (FASE 0 — Gestação)");
+        lines.push("Produto: Alívio físico seguro (sem virar treino)");
+        lines.push(`Data: ${date || "—"}   |   Semana: ${week || "—"}   |   Trimestre: ${tri || "—"}`);
+        lines.push("");
+        lines.push("Seleção de hoje:");
+        selected.forEach(a=> lines.push(`- ${a.title}`));
+        lines.push("");
+        lines.push("Rotina mínima aplicada (3–7 min):");
+        selected.forEach(a=>{
+          lines.push(`\n${a.title}`);
+          a.routines.forEach((r,idx)=>{
+            lines.push(`  ${idx+1}) ${r.name} (${r.time})`);
+            lines.push(`     - Como: ${r.how}`);
+            lines.push(`     - Nota: ${r.note}`);
+          });
+        });
+        lines.push("");
+        lines.push("Regra de segurança do kit:");
+        lines.push("- Movimento suave não deve doer. Se piorar/dor forte, parar e validar com profissional.");
+        lines.push("- Se aliviar, parar ali mesmo (objetivo atingido).");
+        lines.push("");
+        lines.push("Limite: este material não faz diagnóstico e não substitui pré-natal/fisioterapia.");
+
+        out.value = lines.join("\n");
+        return out.value;
+      }
+
+      document.getElementById("btnGenSummary").addEventListener("click", ()=>{
+        if(getSelectedAreas().length>0 && routineBox.textContent.includes("aparecerá aqui")) buildRoutine();
+        genSummary();
+        document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnCopy").addEventListener("click", async ()=>{
+        const txt = (out.value || "").trim();
+        if(!txt) return;
+        try{
+          await navigator.clipboard.writeText(txt);
+          const b = document.getElementById("btnCopy");
+          const old = b.textContent;
+          b.textContent = "Copiado";
+          setTimeout(()=> b.textContent = old, 900);
+        }catch(e){
+          out.focus(); out.select(); document.execCommand("copy");
+        }
+      });
+
+      // ===== PDF (sanitized) =====
+      function pdfSafe(text){
+        if(text == null) return "";
+        let s = String(text);
+        s = s.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+        s = s.replace(/[\uFE0E\uFE0F]/g, "");
+        s = s.replace(/[\u200D]/g, "");
+        s = s.replace(/[×]/g, "x");
+        s = s.replace(/[—–]/g, "-");
+        s = s.replace(/[“”]/g, '"');
+        s = s.replace(/[’]/g, "'");
+        s = s.replace(/[•]/g, "-");
+        s = s.replace(/\s+\n/g, "\n").replace(/\n\s+/g, "\n");
+        return s;
+      }
+
+      function pdfHeader(doc, pageW, margin){
+        doc.setFillColor(238, 247, 244);
+        doc.rect(0,0,pageW,26,"F");
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(20,33,29);
+        doc.setFontSize(14);
+        doc.text("FASE 0 - Alivio fisico seguro (Gestacao)", margin, 12);
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(79,106,98);
+        doc.setFontSize(9.6);
+        doc.text("Rotina minima para desconfortos comuns (nao e diagnostico).", margin, 18);
+      }
+
+      function newPage(doc){
+        doc.addPage();
+        const pageW = doc.internal.pageSize.getWidth();
+        pdfHeader(doc, pageW, 14);
+        return 32;
+      }
+
+      function writeParagraph(doc, text, x, y, maxW, lineH, bottomY){
+        const lines = doc.splitTextToSize(pdfSafe(text), maxW);
+        for(const ln of lines){
+          if(y + lineH > bottomY) y = newPage(doc);
+          doc.text(ln, x, y);
+          y += lineH;
+        }
+        return y;
+      }
+
+      function sectionTitle(doc, title, x, y, bottomY){
+        if(y + 8 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.setTextColor(20,33,29);
+        doc.text(pdfSafe(title), x, y);
+        return y + 6;
+      }
+
+      function downloadPDF(){
+        if(!window.jspdf || !window.jspdf.jsPDF){
+          alert("Falha ao carregar biblioteca de PDF (jsPDF). Verifique sua conexão e recarregue a página.");
+          return;
+        }
+        if(!(out.value||"").trim()) genSummary();
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit:"mm", format:"a4" });
+
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const margin = 14;
+        const x = margin;
+        const maxW = pageW - margin*2;
+        const bottomY = pageH - 14;
+
+        pdfHeader(doc, pageW, margin);
+        let y = 32;
+
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+        const tri  = (triEl.value||"").trim();
+
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(20,33,29);
+        y = writeParagraph(doc, `Data: ${date || "-"}   |   Semana: ${week || "-"}   |   Trimestre: ${tri || "-"}`, x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Selecao e rotina minima", x, y, bottomY);
+
+        const ids = getSelectedAreas();
+        const selected = ids.map(id=>areas.find(a=>a.id===id));
+        if(selected.length===0){
+          y = writeParagraph(doc, "Nenhuma area foi selecionada no dia.", x, y, maxW, 5, bottomY);
+        } else {
+          const rows = [];
+          selected.forEach(a=>{
+            rows.push([pdfSafe(a.title), pdfSafe(a.desc), ""]);
+            a.routines.forEach(r=>{
+              rows.push(["", pdfSafe(r.name + " (" + r.time + ")"), pdfSafe(r.how)]);
+              rows.push(["", "Nota", pdfSafe(r.note)]);
+            });
+          });
+
+          doc.autoTable({
+            startY: y,
+            theme: "grid",
+            styles: { font: "helvetica", fontSize: 9.4, textColor:[20,33,29], cellPadding: 3.2, overflow:"linebreak" },
+            headStyles: { fillColor:[238,247,244], textColor:[20,33,29], fontStyle:"bold" },
+            margin: { left: margin, right: margin },
+            head: [["Area","Item","Como fazer"]],
+            body: rows,
+            columnStyles: { 0:{cellWidth:44}, 1:{cellWidth:56}, 2:{cellWidth:maxW-100} },
+            didDrawPage: function(data){ if(data.pageNumber > 1) pdfHeader(doc, pageW, margin); }
+          });
+
+          y = doc.lastAutoTable.finalY + 8;
+        }
+
+        y = sectionTitle(doc, "O que NAO fazer (seguranca)", x, y, bottomY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(20,33,29);
+
+        const dont = [
+          "- Evitar alongamento profundo ate puxar forte.",
+          "- Evitar prender respiracao.",
+          "- Evitar dor = esta funcionando.",
+          "- Evitar sequencias longas/avancadas sem supervisao.",
+          "- Evitar repetir algo que piorou para acostumar."
+        ];
+        y = writeParagraph(doc, dont.join("\n"), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Resumo do dia (registro)", x, y, bottomY);
+        doc.setFont("courier","normal");
+        doc.setFontSize(9.4);
+        doc.setTextColor(20,33,29);
+        y = writeParagraph(doc, (out.value||"").trim(), x, y, maxW, 4.6, bottomY);
+
+        if(y + 10 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(9);
+        doc.setTextColor(111,133,126);
+        doc.text("Limite: nao substitui pre-natal/fisioterapia. Objetivo: alivio curto e seguro.", x, bottomY);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+        doc.save(`FASE0_AlivioFisicoSeguro_${stamp}.pdf`);
+      }
+
+      document.getElementById("btnPDFTop").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFHere").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFFinal").addEventListener("click", downloadPDF);
+
+      // ===== Reset total =====
+      document.getElementById("btnResetAll").addEventListener("click", ()=>{
+        document.getElementById("btnClear").click();
+        weekEl.value = "";
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+
+    })();
+  </script>
+</body>
+</html>
