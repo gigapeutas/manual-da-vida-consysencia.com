@@ -1,13 +1,1379 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="noindex,nofollow,noarchive" />
-  <title>Fase 0 - produto-01</title>
-  <link rel="stylesheet" href="/_shared/css/global.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Manual da VidA · FASE 0 — Kit Gestação sem Google</title>
+
+  <style>
+    :root{
+      --bg1:#fff5f2;
+      --bg2:#fde6e0;
+      --bg3:#f9dfd7;
+
+      --paper: rgba(255,255,255,.86);
+      --paper2: rgba(255,255,255,.93);
+      --ink:#1f1715;
+      --muted:#6a5450;
+      --muted2:#8a6f69;
+
+      --line: rgba(238,210,201,.80);
+      --shadow: 0 18px 60px rgba(20,12,10,.14);
+      --shadow2: 0 10px 26px rgba(20,12,10,.09);
+
+      --accent:#c86a5e;
+      --accent2:#a9554c;
+      --accentSoft: rgba(200,106,94,.16);
+
+      --okBg: rgba(231,250,240,.90);
+      --okLine: rgba(164,226,190,.95);
+      --okInk:#195236;
+
+      --midBg: rgba(255,246,229,.94);
+      --midLine: rgba(244,210,153,.95);
+      --midInk:#7a4c10;
+
+      --talkBg: rgba(243,238,255,.94);
+      --talkLine: rgba(216,199,255,.98);
+      --talkInk:#33235f;
+
+      --r: 20px;
+      --r2: 16px;
+      --max: 1100px;
+
+      --focus: rgba(200,106,94,.28);
+
+      --headerH: 64px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font: 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 460px at 20% 0%, rgba(200,106,94,.18), transparent 55%),
+        radial-gradient(900px 460px at 85% 20%, rgba(169,85,76,.14), transparent 60%),
+        radial-gradient(900px 520px at 50% 110%, rgba(200,106,94,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+      padding-top: calc(var(--headerH) + env(safe-area-inset-top));
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 14px 14px 94px; }
+
+    /* Header */
+    .topbar{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+      display:flex; justify-content:center;
+      pointer-events:none;
+    }
+    .topbarInner{
+      pointer-events:auto;
+      width: min(var(--max), calc(100% - 20px));
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.80);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      padding: 8px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 160px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(200,106,94,.14);
+    }
+    .brandTxt{ display:flex; flex-direction:column; line-height:1.1; }
+    .brandTxt b{ font-size: 13px; letter-spacing:.2px; }
+    .brandTxt span{ font-size: 12px; color: var(--muted); }
+
+    .actions{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.88);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:13.5px;
+      box-shadow: var(--shadow2);
+      transition: transform .05s ease, border-color .2s ease;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ border-color: rgba(200,106,94,.65); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus{ outline:none; box-shadow:0 0 0 4px var(--focus), var(--shadow2); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.62);
+      color: var(--muted);
+    }
+    .btn.icon{ padding:10px 12px; }
+
+    @media (max-width:760px){
+      .brandTxt span{ display:none; }
+      .btn.pdfTxt span{ display:none; }
+      .btn{ padding:10px 12px; }
+    }
+
+    /* Drawer */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(20,14,12,.35);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+    }
+    .overlay.on{ opacity:1; pointer-events:auto; }
+    .drawer{
+      position: fixed; top:0; right:0; height:100%;
+      width: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 70;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex; flex-direction:column;
+      padding-top: env(safe-area-inset-top);
+    }
+    .drawer.on{ transform: translateX(0); }
+    .drawerHd{
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(600px 220px at 20% 0%, rgba(200,106,94,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .drawerHd .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .drawerHd h3{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .drawerHd p{ margin:8px 0 0; color: var(--muted); font-size:13.2px; }
+    .drawerBd{
+      padding: 12px 16px 16px;
+      display:grid; gap:10px;
+      overflow:auto;
+    }
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.88);
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navItem b{ display:block; }
+    .navItem span{ display:block; margin-top:4px; color: var(--muted); font-size:13px; }
+    .navItem:hover{ border-color: rgba(200,106,94,.55); }
+
+    /* Conteúdo */
+    section[id]{ scroll-margin-top: calc(var(--headerH) + env(safe-area-inset-top) + 14px); }
+
+    .hero{
+      border:1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-40px -40px auto auto;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle at 30% 30%, rgba(200,106,94,.22), transparent 60%);
+      filter: blur(2px);
+    }
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.3px; }
+    .hero p{ margin: 8px 0 0; color: var(--muted); max-width: 96ch; font-size: 14.2px; }
+    .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.88);
+      color: var(--muted);
+      font-size: 12.8px;
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--paper2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 15% 0%, rgba(200,106,94,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .hd h2{ margin:0; font-size:15px; letter-spacing:.2px; }
+    .meta{ margin-top:6px; font-size:13.4px; color:var(--muted); max-width: 96ch; }
+    .bd{ padding:14px; }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    @media (max-width:920px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      border-radius: var(--r2);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .panel h3{ margin:0 0 8px; font-size:14px; letter-spacing:.15px; }
+    .small{ font-size:13px; color:var(--muted); }
+
+    label{ display:block; font-weight:900; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input, select{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+    input:focus, select:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      color: var(--muted);
+      font-size:13.4px;
+    }
+
+    .qItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .qTop{
+      display:flex; gap:10px; flex-wrap:wrap;
+      align-items:flex-start; justify-content:space-between;
+    }
+    .qLeft{ display:flex; gap:10px; align-items:flex-start; min-width: 240px; flex:1; }
+    .qName{ font-weight:950; letter-spacing:-.1px; }
+    input[type="checkbox"]{
+      width:auto;
+      box-shadow:none;
+      transform: scale(1.12);
+      accent-color: var(--accent2);
+      margin-top:4px;
+    }
+    .qControls{
+      display:grid; gap:10px;
+      grid-template-columns: 1fr 1fr;
+      align-items:end;
+    }
+    @media (max-width:760px){ .qControls{ grid-template-columns: 1fr; } }
+
+    .resultBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.97);
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:8px;
+    }
+    .badgeRes{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      color: var(--muted);
+      width: fit-content;
+    }
+    .bOk{ background: var(--okBg); border-color: var(--okLine); color: var(--okInk); }
+    .bMid{ background: var(--midBg); border-color: var(--midLine); color: var(--midInk); }
+    .bTalk{ background: var(--talkBg); border-color: var(--talkLine); color: var(--talkInk); }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    /* Checklist */
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+    }
+    th, td{
+      text-align:left;
+      padding:10px 10px;
+      border-bottom:1px solid rgba(238,210,201,.70);
+      vertical-align:top;
+      font-size:13.4px;
+    }
+    th{
+      font-size:12.4px;
+      letter-spacing:.2px;
+      color:var(--muted);
+      background: rgba(255,247,245,.95);
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    .mobileCards{ display:none; }
+    @media (max-width:760px){
+      table{ display:none; }
+      .mobileCards{ display:grid; gap:10px; }
+      .mCard{
+        border:1px solid var(--line);
+        background:#fff;
+        border-radius: 16px;
+        box-shadow: var(--shadow2);
+        padding:12px;
+      }
+      .mTitle{ font-weight:950; margin:0; }
+      .mCols{ display:grid; gap:10px; margin-top:10px; }
+      .mBox{
+        border-radius: 12px;
+        padding:10px;
+        border:1px solid rgba(0,0,0,.06);
+        background: rgba(255,247,245,.60);
+      }
+      .mBox b{ display:block; margin-bottom:4px; }
+    }
+
+    /* Módulo 2 */
+    .zone{
+      border-radius: 16px;
+      padding:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: var(--shadow2);
+    }
+    .zOk{ background: var(--okBg); border-color: var(--okLine); }
+    .zMid{ background: var(--midBg); border-color: var(--midLine); }
+    .zTalk{ background: var(--talkBg); border-color: var(--talkLine); }
+
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background: rgba(255,255,255,.84);
+      color:var(--muted);
+      margin-bottom:8px;
+      user-select:none;
+    }
+    ul{ margin:8px 0 0; padding:0 0 0 18px; }
+    li{ margin:6px 0; }
+
+    /* Módulo 3 */
+    .pillRow{ display:flex; flex-wrap:wrap; gap:8px; }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(253,238,234,.72);
+      padding:8px 11px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+      font-weight:900;
+    }
+    .pill[aria-pressed="true"]{
+      border-color: rgba(200,106,94,.72);
+      color: var(--ink);
+      background: rgba(200,106,94,.18);
+    }
+
+    textarea{
+      width:100%;
+      min-height: 210px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+
+    .fine{
+      margin-top:12px;
+      color: var(--muted2);
+      font-size: 13.2px;
+    }
+
+    /* CTA Final */
+    .ctaFinal{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+  </style>
 </head>
+
 <body>
-  <script src="/_shared/js/global.js"></script>
+  <!-- Header -->
+  <div class="topbar">
+    <div class="topbarInner" id="topbarInner">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brandTxt">
+          <b>Manual da VidA · FASE 0</b>
+          <span>Kit: Gestação sem Google</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn icon" id="btnMenu" type="button" aria-haspopup="dialog" aria-controls="drawer" aria-expanded="false">☰ <span>Menu</span></button>
+        <button class="btn primary pdfTxt" id="btnPDFTop" type="button">⬇️ <span>PDF do Kit</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerHd">
+      <div class="row">
+        <h3>Navegação do Kit</h3>
+        <button class="btn ghost icon" id="btnCloseMenu" type="button">✕</button>
+      </div>
+      <p>Escolha um módulo. O menu fecha e você cai na sessão certa.</p>
+    </div>
+    <div class="drawerBd">
+      <div class="navItem" data-go="m1">
+        <b>Módulo 1 — Questionário</b>
+        <span>Marca sintomas → Normal / Observar / Vale conversar (sem alarmismo).</span>
+      </div>
+      <div class="navItem" data-go="m1_check">
+        <b>Checklist do trimestre</b>
+        <span>Consulta rápida para reduzir Google (tabela/cads).</span>
+      </div>
+      <div class="navItem" data-go="m2">
+        <b>Módulo 2 — O que fazer agora</b>
+        <span>Ações mínimas: ignorar / observar / conversar.</span>
+      </div>
+      <div class="navItem" data-go="m3">
+        <b>Módulo 3 — Relato pronto + PDF</b>
+        <span>Texto para consulta + PDF completo sem cortes.</span>
+      </div>
+      <div class="navItem" id="navPdf">
+        <b>Baixar PDF agora</b>
+        <span>Exporta questionário, checklist, guia e relato.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="wrap">
+    <section class="hero" id="top">
+      <h1>KIT FASE 0 — Gestação sem Google</h1>
+      <p>
+        Um kit prático em 3 módulos para reduzir ansiedade de pesquisa e organizar percepção.
+        <b>Não faz diagnóstico</b> e <b>não substitui pré-natal</b>. Ele te ajuda a tomar a próxima ação com calma.
+      </p>
+      <div class="chips">
+        <span class="chip">Menos pesquisa, mais clareza</span>
+        <span class="chip">Resultados tranquilos (sem “risco”)</span>
+        <span class="chip">PDF completo (sem cortar texto)</span>
+      </div>
+    </section>
+
+    <!-- MÓDULO 1 -->
+    <section class="card" id="m1">
+      <div class="hd">
+        <h2>Módulo 1 — Questionário (Normal x Observar x Vale conversar)</h2>
+        <div class="meta">
+          Marque o que te representa hoje. No final do questionário, clique em <b>Gerar resultado</b>.
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Contexto (opcional)</h3>
+            <div class="grid2">
+              <div>
+                <label>Semana de gestação</label>
+                <input id="week_m1" inputmode="numeric" placeholder="Ex.: 10"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date_m1" placeholder="Ex.: 17/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <label>Trimestre</label>
+            <select id="tri_m1">
+              <option value="1º trimestre">1º trimestre</option>
+              <option value="2º trimestre">2º trimestre</option>
+              <option value="3º trimestre">3º trimestre</option>
+            </select>
+
+            <div class="hint">
+              Nota calma: se você estiver com algo muito intenso “agora” (ex.: desmaio, falta de ar,
+              dor no peito, febre alta, sangramento forte, dor muito forte), vale buscar orientação/atendimento imediatamente.
+              O kit não é para decidir isso.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Resultado</h3>
+            <div id="quizSummary" class="resultBox">
+              <div class="badgeRes">Responda o questionário e, no final, clique em <b>Gerar resultado</b>.</div>
+            </div>
+
+            <div class="hint">
+              Isso é um organizador de decisão, não diagnóstico. A ideia é reduzir a dúvida e poupar sua energia mental.
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="panel">
+          <h3>Sintomas (marque apenas o que te representa hoje)</h3>
+          <div id="quizList" style="display:grid; gap:10px;"></div>
+
+          <!-- BOTÕES AGORA FICAM AQUI (DEPOIS DE RESPONDER) -->
+          <div class="footer" style="justify-content:flex-start;">
+            <button class="btn primary" id="btnRunQuiz" type="button">Gerar resultado</button>
+            <button class="btn" id="btnClearQuiz" type="button">Limpar</button>
+            <button class="btn ghost" id="btnGoResult" type="button">Ver resultado</button>
+          </div>
+
+          <div class="hint">
+            Usabilidade: responda → gerar → ler a saída. Se der “vale conversar”, é para reduzir incerteza, não para causar pânico.
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="panel" id="m1_check">
+          <h3>Checklist do trimestre (consulta rápida)</h3>
+          <div class="meta" style="margin-top:0;">
+            Referência curta para reduzir Google. No celular vira cards.
+          </div>
+
+          <div style="height:10px;"></div>
+
+          <table aria-label="Checklist Normal x Atenção">
+            <thead>
+              <tr>
+                <th style="width:32%;">Situação</th>
+                <th style="width:34%;">Normal (na maioria)</th>
+                <th style="width:34%;">Observar / Vale conversar</th>
+              </tr>
+            </thead>
+            <tbody id="checklistBody"></tbody>
+          </table>
+
+          <div class="mobileCards" id="checklistCards"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 2 -->
+    <section class="card" id="m2">
+      <div class="hd">
+        <h2>Módulo 2 — O que fazer agora (3 saídas práticas)</h2>
+        <div class="meta">Ações mínimas. Sem “se culpar”, sem “pesquisa infinita”.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="zone zOk">
+            <div class="tag">Normal (na maioria) — pode simplificar</div>
+            <ul>
+              <li>Enjoos leves/intermitentes</li>
+              <li>Cansaço/sono (especialmente no começo)</li>
+              <li>Oscilação emocional leve</li>
+              <li>Sensações corporais novas, mas toleráveis</li>
+            </ul>
+            <div class="hint">Ação mínima: descanso + alimentação/hidratação possível + zero maratona de pesquisa.</div>
+          </div>
+
+          <div class="zone zMid">
+            <div class="tag">Observar com calma (zona cinza)</div>
+            <ul>
+              <li>Aparece e some sem padrão</li>
+              <li>Alternância de dias bons e ruins</li>
+              <li>Incomoda, mas não te derruba</li>
+              <li>Você quer certeza imediata o tempo todo</li>
+            </ul>
+            <div class="hint">Ação mínima: 2 linhas por dia (intensidade + o que melhora/piora). Isso vale mais que Google.</div>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="zone zTalk">
+          <div class="tag">Vale conversar com profissional (sem pânico)</div>
+          <ul>
+            <li>Está te impedindo de funcionar</li>
+            <li>Persistiu por vários dias e te desgasta</li>
+            <li>Você não consegue “soltar a dúvida”</li>
+            <li>Você quer um critério personalizado (o que observar e quando avisar)</li>
+          </ul>
+          <div class="hint">Ação mínima: usar o relato pronto. Conversa curta bem feita reduz incerteza melhor do que internet.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO 3 -->
+    <section class="card" id="m3">
+      <div class="hd">
+        <h2>Módulo 3 — Relato pronto + PDF (kit completo)</h2>
+        <div class="meta">Gere um texto curto e correto para levar ao profissional. O PDF sai completo e sem “texto bugado”.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Dados (opcionais)</h3>
+            <div class="grid2">
+              <div>
+                <label>Semana de gestação</label>
+                <input id="week" inputmode="numeric" placeholder="Ex.: 10"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date" placeholder="Ex.: 17/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <label>Trimestre</label>
+            <select id="triReport">
+              <option value="1º trimestre">1º trimestre</option>
+              <option value="2º trimestre">2º trimestre</option>
+              <option value="3º trimestre">3º trimestre</option>
+            </select>
+
+            <div style="height:10px;"></div>
+
+            <label>Foco de hoje (marque 1–3)</label>
+            <div class="pillRow" role="group" aria-label="Focos (relatório)">
+              <button class="pill" type="button" data-rpick="Enjoos/náuseas" aria-pressed="false">Enjoos / náuseas</button>
+              <button class="pill" type="button" data-rpick="Cansaço/sono" aria-pressed="false">Cansaço / sono</button>
+              <button class="pill" type="button" data-rpick="Oscilação emocional" aria-pressed="false">Oscilação emocional</button>
+              <button class="pill" type="button" data-rpick="Sensações corporais novas" aria-pressed="false">Sensações corporais novas</button>
+              <button class="pill" type="button" data-rpick="Sono ruim" aria-pressed="false">Sono ruim</button>
+              <button class="pill" type="button" data-rpick="Excesso de informação (ansiedade ao pesquisar)" aria-pressed="false">Excesso de informação</button>
+            </div>
+
+            <div class="footer">
+              <button class="btn primary" id="btnGen" type="button">Gerar relato</button>
+              <button class="btn" id="btnCopy" type="button">Copiar</button>
+            </div>
+
+            <div class="hint">
+              O relato é neutro. Ele organiza comunicação e economiza energia mental.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Relato (copiável)</h3>
+            <textarea id="out" readonly placeholder="Clique em “Gerar relato”..."></textarea>
+
+            <div class="footer">
+              <button class="btn primary" id="btnPDFHere" type="button">Baixar PDF (kit completo)</button>
+              <button class="btn ghost" id="btnTop" type="button">Voltar ao topo</button>
+            </div>
+
+            <div class="hint">
+              O PDF inclui: resultado do questionário + checklist + guia + perguntas + relato (sem caracteres quebrados).
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Perguntas objetivas para levar ao profissional (entra no PDF)</h3>
+          <ul id="qList">
+            <li>“Pelo meu relato, o que você considera normal da fase e o que vale observar?”</li>
+            <li>“Qual sinal específico seria o gatilho para eu entrar em contato?”</li>
+            <li>“Qual rotina mínima você recomenda para eu reduzir pesquisa e manter segurança?”</li>
+          </ul>
+        </div>
+
+        <div class="fine">
+          Limite: este kit não faz diagnóstico clínico e não substitui pré-natal. Objetivo: reduzir ruído e economizar esforço mental.
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL: PDF NO FIM (SEM MENU) -->
+    <div class="ctaFinal" id="ctaFinal">
+      <div class="small">
+        Pronto: se você só quer “pegar tudo organizado”, baixe o PDF completo aqui.
+      </div>
+      <button class="btn primary" id="btnPDFFinal" type="button">Baixar PDF (kit completo)</button>
+    </div>
+
+    <!-- Reset -->
+    <section class="hero" style="padding:14px; margin-top:12px;">
+      <div class="footer" style="margin-top:0; justify-content:space-between;">
+        <div class="small">Se algo estiver te deixando insegura, o melhor “atalho” é validação humana qualificada.</div>
+        <button class="btn" id="btnResetAll" type="button">Resetar (voltar ao topo)</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- jsPDF + AutoTable -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.3/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <script>
+    (function(){
+      const topbarInner = document.getElementById("topbarInner");
+      function setHeaderH(){
+        const r = topbarInner.getBoundingClientRect();
+        const pillH = Math.ceil(r.height + 22);
+        document.documentElement.style.setProperty("--headerH", pillH + "px");
+      }
+      setHeaderH();
+      window.addEventListener("resize", setHeaderH);
+      window.addEventListener("orientationchange", setHeaderH);
+      if(window.visualViewport){
+        window.visualViewport.addEventListener("resize", setHeaderH);
+        window.visualViewport.addEventListener("scroll", setHeaderH);
+      }
+      setTimeout(setHeaderH, 120);
+
+      // Drawer
+      const overlay = document.getElementById("overlay");
+      const drawer = document.getElementById("drawer");
+      const btnMenu = document.getElementById("btnMenu");
+      const btnCloseMenu = document.getElementById("btnCloseMenu");
+
+      function openMenu(){
+        overlay.hidden = false;
+        overlay.classList.add("on");
+        drawer.classList.add("on");
+        drawer.setAttribute("aria-hidden","false");
+        btnMenu.setAttribute("aria-expanded","true");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMenu(){
+        overlay.classList.remove("on");
+        drawer.classList.remove("on");
+        drawer.setAttribute("aria-hidden","true");
+        btnMenu.setAttribute("aria-expanded","false");
+        document.body.style.overflow = "";
+        setTimeout(()=>{ overlay.hidden = true; }, 200);
+      }
+      btnMenu.addEventListener("click", ()=>{
+        const expanded = btnMenu.getAttribute("aria-expanded")==="true";
+        expanded ? closeMenu() : openMenu();
+      });
+      btnCloseMenu.addEventListener("click", closeMenu);
+      overlay.addEventListener("click", closeMenu);
+      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeMenu(); });
+
+      document.querySelectorAll(".navItem[data-go]").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.dataset.go;
+          closeMenu();
+          setTimeout(()=> document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"}), 60);
+        });
+      });
+      document.getElementById("navPdf").addEventListener("click", ()=>{
+        closeMenu();
+        setTimeout(()=> downloadKitPDF(), 80);
+      });
+
+      // Data
+      const checklist = {
+        "1º trimestre": [
+          { s:"Náuseas / enjoos", n:"Leves a moderados, intermitentes; melhora com pequenas mudanças na alimentação.", a:"Se persistente e te impede de se alimentar/hidratar, vale conversar." },
+          { s:"Cansaço / sono", n:"Sonolência e queda de energia (comum no início).", a:"Se exaustão contínua te impede de funcionar, vale conversar." },
+          { s:"Oscilação emocional", n:"Maior sensibilidade e variação de humor.", a:"Se tristeza/ansiedade persistente por dias e te derruba, vale conversar." },
+          { s:"Sensações corporais novas", n:"Estranheza corporal tolerável (mudança de percepção).", a:"Se dor forte ou persistente, vale validar com profissional." }
+        ],
+        "2º trimestre": [
+          { s:"Energia / disposição", n:"Pode melhorar; oscilar ainda é possível.", a:"Se queda forte e persistente sem explicação, vale conversar." },
+          { s:"Sono", n:"Pode variar por posição, calor, pensamentos.", a:"Se insônia persistente com impacto forte no dia, vale conversar." },
+          { s:"Corpo mudando", n:"Desconfortos leves e flutuação de apetite.", a:"Se dor contínua forte limitando rotina, vale validar." },
+          { s:"Excesso de informação", n:"Dúvidas pontuais e curiosidade.", a:"Se pesquisar aumenta ansiedade, reduzir fontes e conversar pode ajudar." }
+        ],
+        "3º trimestre": [
+          { s:"Cansaço / peso", n:"Mais cansaço por carga física e sono fragmentado.", a:"Se piora progressiva e incapacitante, vale conversar." },
+          { s:"Sono fragmentado", n:"Acordar mais vezes e ajustar posição.", a:"Se privação de sono persistente com impacto intenso, vale conversar." },
+          { s:"Mente acelerada", n:"Pensar em logística/parto variando por dia.", a:"Se ansiedade constante que não reduz com rotina e descanso, vale conversar." },
+          { s:"Desconfortos", n:"Desconfortos comuns da reta final, variando.", a:"Se algo “não está certo” para você, vale validar com profissional." }
+        ]
+      };
+
+      const quizSymptoms = [
+        { id:"nausea", name:"Náuseas / enjoos", hint:"A diferença é o impacto: tolerável vs. te impedir de comer/hidratar." },
+        { id:"fatigue", name:"Cansaço / sonolência", hint:"Comum no início; observe persistência e incapacidade de funcionar." },
+        { id:"mood", name:"Oscilação emocional", hint:"Variação acontece; atenção quando vira sofrimento contínuo." },
+        { id:"sleep", name:"Sono ruim", hint:"Sono pode mudar; observe quando vira exaustão contínua." },
+        { id:"body", name:"Sensações corporais novas", hint:"Estranheza tolerável pode acontecer; dor forte persistente vale validar." },
+        { id:"info", name:"Ansiedade após pesquisar", hint:"Se pesquisar piora, reduzir fontes e buscar validação humana costuma aliviar." }
+      ];
+
+      const durationOptions = [
+        { v:"hoje", label:"Hoje / pontual" },
+        { v:"2-3", label:"2–3 dias" },
+        { v:"semana", label:"1 semana ou mais" }
+      ];
+      const intensityOptions = [
+        { v:"leve", label:"Leve (tolerável)" },
+        { v:"media", label:"Média (incomoda)" },
+        { v:"forte", label:"Forte (atrapalha muito)" }
+      ];
+
+      // Helpers
+      function escapeHtml(s){
+        return String(s)
+          .replaceAll("&","&amp;")
+          .replaceAll("<","&lt;")
+          .replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;")
+          .replaceAll("'","&#039;");
+      }
+
+      // Checklist render
+      const tri_m1 = document.getElementById("tri_m1");
+      const checklistBody = document.getElementById("checklistBody");
+      const checklistCards = document.getElementById("checklistCards");
+
+      function renderChecklist(tri){
+        const rows = checklist[tri] || [];
+        checklistBody.innerHTML = rows.map(r => `
+          <tr>
+            <td><b>${escapeHtml(r.s)}</b></td>
+            <td>${escapeHtml(r.n)}</td>
+            <td>${escapeHtml(r.a)}</td>
+          </tr>
+        `).join("");
+
+        checklistCards.innerHTML = rows.map(r => `
+          <div class="mCard">
+            <p class="mTitle">${escapeHtml(r.s)}</p>
+            <div class="mCols">
+              <div class="mBox"><b>Normal</b>${escapeHtml(r.n)}</div>
+              <div class="mBox"><b>Observar / Vale conversar</b>${escapeHtml(r.a)}</div>
+            </div>
+          </div>
+        `).join("");
+      }
+      tri_m1.addEventListener("change", ()=> renderChecklist(tri_m1.value));
+      renderChecklist(tri_m1.value);
+
+      // Quiz build
+      const quizList = document.getElementById("quizList");
+      const quizSummary = document.getElementById("quizSummary");
+
+      function buildQuiz(){
+        quizList.innerHTML = quizSymptoms.map(s => `
+          <div class="qItem" data-qid="${s.id}">
+            <div class="qTop">
+              <div class="qLeft">
+                <input type="checkbox" id="chk_${s.id}" />
+                <div>
+                  <div class="qName">${escapeHtml(s.name)}</div>
+                  <div class="small">${escapeHtml(s.hint)}</div>
+                </div>
+              </div>
+              <div class="small" style="margin-top:4px;">marque se te representa</div>
+            </div>
+
+            <div class="qControls" data-controls="${s.id}" style="opacity:.55; pointer-events:none;">
+              <div>
+                <label>Intensidade</label>
+                <select id="int_${s.id}">
+                  ${intensityOptions.map(o=>`<option value="${o.v}">${o.label}</option>`).join("")}
+                </select>
+              </div>
+              <div>
+                <label>Duração</label>
+                <select id="dur_${s.id}">
+                  ${durationOptions.map(o=>`<option value="${o.v}">${o.label}</option>`).join("")}
+                </select>
+              </div>
+            </div>
+          </div>
+        `).join("");
+
+        quizSymptoms.forEach(s=>{
+          const chk = document.getElementById(`chk_${s.id}`);
+          const controls = quizList.querySelector(`[data-controls="${s.id}"]`);
+          chk.addEventListener("change", ()=>{
+            const on = chk.checked;
+            controls.style.opacity = on ? "1" : ".55";
+            controls.style.pointerEvents = on ? "auto" : "none";
+          });
+        });
+      }
+      buildQuiz();
+
+      function scoreItem(intensity, duration){
+        let score = 0;
+        if(intensity === "media") score += 1;
+        if(intensity === "forte") score += 2;
+        if(duration === "2-3") score += 1;
+        if(duration === "semana") score += 2;
+        return score;
+      }
+      function classifyScore(score){
+        if(score <= 1) return "NORMAL";
+        if(score <= 3) return "OBSERVAR";
+        return "CONVERSAR";
+      }
+      function labelForClass(c){
+        if(c==="NORMAL") return {txt:"Normal (na maioria dos casos)", cls:"bOk"};
+        if(c==="OBSERVAR") return {txt:"Observar com calma", cls:"bMid"};
+        return {txt:"Vale conversar com profissional", cls:"bTalk"};
+      }
+      function worstOf(a,b){
+        const rank = {NORMAL:0, OBSERVAR:1, CONVERSAR:2};
+        return (rank[b] > rank[a]) ? b : a;
+      }
+
+      function runQuiz(){
+        const tri = tri_m1.value;
+        const week = (document.getElementById("week_m1").value||"").trim();
+        const date = (document.getElementById("date_m1").value||"").trim();
+
+        const chosen = [];
+        let overall = "NORMAL";
+
+        quizSymptoms.forEach(s=>{
+          const chk = document.getElementById(`chk_${s.id}`);
+          if(!chk.checked) return;
+          const intensity = document.getElementById(`int_${s.id}`).value;
+          const duration = document.getElementById(`dur_${s.id}`).value;
+          const score = scoreItem(intensity, duration);
+          const cls = classifyScore(score);
+          overall = worstOf(overall, cls);
+          chosen.push({ name:s.name, intensity, duration, cls });
+        });
+
+        if(chosen.length === 0){
+          quizSummary.innerHTML = `<div class="badgeRes">Nenhum item marcado. Marque o que te representa e gere o resultado.</div>`;
+          return { tri, week, date, overall:null, items:[] };
+        }
+
+        const badge = labelForClass(overall);
+
+        const calmText =
+          overall === "NORMAL"
+            ? "Pelo que você marcou, isso tende a estar dentro do esperado da fase. Use o kit para evitar pesquisa excessiva."
+            : overall === "OBSERVAR"
+              ? "Pelo que você marcou, vale observar com calma e registrar por poucos dias. Se persistir ou te desgastar, conversar com um profissional pode trazer clareza."
+              : "Pelo que você marcou, pode ser útil conversar com um profissional para esclarecer com segurança. Isso não é alarme: é um atalho para reduzir incerteza.";
+
+        const nextAction =
+          overall === "NORMAL"
+            ? "Próximo passo mínimo: reduzir pesquisa e focar em descanso, alimentação e hidratação possíveis."
+            : overall === "OBSERVAR"
+              ? "Próximo passo mínimo: anotar 2 linhas (quando começou, intensidade, o que melhora/piora) por 2–3 dias."
+              : "Próximo passo mínimo: usar o Relato pronto (Módulo 3) e levar as perguntas do kit.";
+
+        quizSummary.innerHTML = `
+          <div class="badgeRes ${badge.cls}">${badge.txt}</div>
+          <div class="small">Trimestre: <b>${escapeHtml(tri)}</b> • Semana: <b>${escapeHtml(week||"—")}</b> • Data: <b>${escapeHtml(date||"—")}</b></div>
+          <div>${escapeHtml(calmText)}</div>
+          <div class="small"><b>${escapeHtml(nextAction)}</b></div>
+          <div class="small" style="margin-top:6px;"><b>Itens marcados:</b></div>
+          <ul style="margin:6px 0 0; padding-left:18px;">
+            ${chosen.map(it=>{
+              const b = labelForClass(it.cls);
+              return `<li><b>${escapeHtml(it.name)}</b> — ${escapeHtml(b.txt)}</li>`;
+            }).join("")}
+          </ul>
+        `;
+
+        return { tri, week, date, overall, items: chosen, calmText, nextAction };
+      }
+
+      document.getElementById("btnRunQuiz").addEventListener("click", ()=>{
+        runQuiz();
+        // feedback de fluxo: desce para o resultado
+        document.querySelector("#m1 .panel:nth-child(2)").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+      document.getElementById("btnGoResult").addEventListener("click", ()=>{
+        document.querySelector("#m1 .panel:nth-child(2)").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+      document.getElementById("btnClearQuiz").addEventListener("click", ()=>{
+        quizSymptoms.forEach(s=>{
+          const chk = document.getElementById(`chk_${s.id}`);
+          chk.checked = false;
+          const controls = quizList.querySelector(`[data-controls="${s.id}"]`);
+          controls.style.opacity = ".55";
+          controls.style.pointerEvents = "none";
+          document.getElementById(`int_${s.id}`).value = "leve";
+          document.getElementById(`dur_${s.id}`).value = "hoje";
+        });
+        quizSummary.innerHTML = `<div class="badgeRes">Responda o questionário e, no final, clique em <b>Gerar resultado</b>.</div>`;
+      });
+
+      // Relato
+      const weekEl = document.getElementById("week");
+      const dateEl = document.getElementById("date");
+      const triReport = document.getElementById("triReport");
+      const out = document.getElementById("out");
+      const reportPills = Array.from(document.querySelectorAll(".pill[data-rpick]"));
+      const rpicks = new Set();
+
+      reportPills.forEach(p => p.addEventListener("click", ()=>{
+        const label = p.dataset.rpick;
+        if(rpicks.has(label)) rpicks.delete(label); else rpicks.add(label);
+        p.setAttribute("aria-pressed", rpicks.has(label) ? "true" : "false");
+      }));
+
+      function generateReportText(){
+        const week = (weekEl.value || "").trim();
+        const date = (dateEl.value || "").trim();
+        const tri = (triReport.value || "").trim();
+        const focus = Array.from(rpicks);
+        const focusText = focus.length ? focus.join(", ") : "(não selecionei foco)";
+
+        let pattern = "Padrão provável: adaptação normal da fase com variações (corpo e mente em ritmos diferentes).";
+        let action = "Ação mínima: reduzir pesquisa, registrar o essencial e validar com profissional se persistir.";
+
+        if(Array.from(rpicks).some(x => x.includes("Excesso de informação"))){
+          pattern = "Padrão provável: carga cognitiva por excesso de informação (pesquisa aumenta dúvida/ansiedade).";
+          action = "Ação mínima: limitar fontes, registrar em 2 linhas e buscar validação humana se a dúvida não soltar.";
+        }
+
+        const msg = [
+          "RELATO — Manual da VidA (FASE 0 — Gestação)",
+          "Kit: Gestação sem Google",
+          `Data: ${date || "—"}   |   Semana: ${week || "—"}   |   Trimestre: ${tri || "—"}`,
+          "",
+          `Foco de hoje: ${focusText}`,
+          "",
+          "Leitura neutra:",
+          `- ${pattern}`,
+          "",
+          "O que eu fiz / vou fazer (mínimo):",
+          `- ${action}`,
+          "",
+          "Frase para consulta (copiar/colar):",
+          `“Estou gestante e quero validar a normalidade do que estou sentindo. Meu foco hoje foi: ${focusText}. Gostaria de orientação sobre o que observar e qual seria um sinal específico para eu entrar em contato.”`,
+          "",
+          "Limite: este relato não faz diagnóstico clínico e não substitui pré-natal."
+        ].join("\n");
+
+        out.value = msg;
+        return msg;
+      }
+
+      document.getElementById("btnGen").addEventListener("click", generateReportText);
+      document.getElementById("btnCopy").addEventListener("click", async ()=>{
+        const txt = (out.value || "").trim();
+        if(!txt) return;
+        try{
+          await navigator.clipboard.writeText(txt);
+          const b = document.getElementById("btnCopy");
+          const old = b.textContent;
+          b.textContent = "Copiado";
+          setTimeout(()=> b.textContent = old, 900);
+        }catch(e){
+          out.focus(); out.select(); document.execCommand("copy");
+        }
+      });
+
+      document.getElementById("btnTop").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+
+      // Defaults
+      (function initDates(){
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        if(!document.getElementById("date_m1").value) document.getElementById("date_m1").value = `${dd}/${mm}/${yy}`;
+        if(!dateEl.value) dateEl.value = `${dd}/${mm}/${yy}`;
+      })();
+
+      // ====== PDF FIX: sanitização (remove emoji / símbolos que quebram jsPDF) ======
+      function pdfSafe(text){
+        if(text == null) return "";
+        let s = String(text);
+
+        // remove emojis e variation selectors (causadores clássicos de “Ø=Ý...” no jsPDF)
+        s = s.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+        s = s.replace(/[\uFE0E\uFE0F]/g, ""); // variation selectors
+        s = s.replace(/[\u200D]/g, ""); // zero-width joiner
+
+        // troca símbolos problemáticos por equivalentes simples
+        s = s.replace(/[×]/g, "x");
+        s = s.replace(/[—–]/g, "-");
+        s = s.replace(/[“”]/g, '"');
+        s = s.replace(/[’]/g, "'");
+        s = s.replace(/[•]/g, "-");
+
+        // normaliza espaços
+        s = s.replace(/\s+\n/g, "\n").replace(/\n\s+/g, "\n");
+        return s;
+      }
+
+      function pdfHeader(doc, pageW, margin){
+        doc.setFillColor(255,247,245);
+        doc.rect(0,0,pageW,26,"F");
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(31,23,21);
+        doc.setFontSize(14);
+        doc.text("KIT FASE 0 — Gestação sem Google", margin, 12);
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(106,84,80);
+        doc.setFontSize(9.6);
+        doc.text("Normal x Observar x Vale conversar (não é diagnóstico).", margin, 18);
+      }
+
+      function newPage(doc){
+        doc.addPage();
+        const pageW = doc.internal.pageSize.getWidth();
+        pdfHeader(doc, pageW, 14);
+        return 32;
+      }
+
+      function writeParagraph(doc, text, x, y, maxW, lineH, bottomY){
+        const lines = doc.splitTextToSize(pdfSafe(text), maxW);
+        for(const ln of lines){
+          if(y + lineH > bottomY) y = newPage(doc);
+          doc.text(ln, x, y);
+          y += lineH;
+        }
+        return y;
+      }
+
+      function sectionTitle(doc, title, x, y, bottomY){
+        if(y + 8 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.setTextColor(31,23,21);
+        doc.text(pdfSafe(title), x, y);
+        return y + 6;
+      }
+
+      function downloadKitPDF(){
+        // garante que resultado e relato existam
+        const quizResult = runQuiz();
+        if(!(out.value||"").trim()) generateReportText();
+
+        if(!window.jspdf || !window.jspdf.jsPDF){
+          alert("Falha ao carregar biblioteca de PDF (jsPDF). Verifique sua conexão e recarregue a página.");
+          return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit:"mm", format:"a4" });
+
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const margin = 14;
+        const x = margin;
+        const maxW = pageW - margin*2;
+        const bottomY = pageH - 14;
+
+        pdfHeader(doc, pageW, margin);
+        let y = 32;
+
+        const week = (weekEl.value||document.getElementById("week_m1").value||"").trim();
+        const date = (dateEl.value||document.getElementById("date_m1").value||"").trim();
+        const triHuman = (triReport.value||tri_m1.value||"").trim();
+
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(31,23,21);
+        y = writeParagraph(doc, `Data: ${date || "-"}   |   Semana: ${week || "-"}   |   Trimestre: ${triHuman || "-"}`, x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Módulo 1 — Resultado do questionário", x, y, bottomY);
+
+        if(!quizResult.overall){
+          y = writeParagraph(doc, "Nenhum sintoma foi marcado no questionário.", x, y, maxW, 5, bottomY);
+        } else {
+          const overall =
+            quizResult.overall === "NORMAL" ? "Normal (na maioria dos casos)" :
+            quizResult.overall === "OBSERVAR" ? "Observar com calma" :
+            "Vale conversar com profissional";
+
+          y = writeParagraph(doc, "Resultado geral: " + overall, x, y, maxW, 5, bottomY);
+          y = writeParagraph(doc, quizResult.calmText, x, y, maxW, 5, bottomY);
+          y = writeParagraph(doc, quizResult.nextAction, x, y, maxW, 5, bottomY);
+          y += 2;
+
+          const intMap = {leve:"Leve", media:"Média", forte:"Forte"};
+          const durMap = {hoje:"Hoje", "2-3":"2–3 dias", semana:"1 semana+"};
+
+          const rows = quizResult.items.map(it=>{
+            const cls = it.cls === "NORMAL" ? "Normal" : it.cls === "OBSERVAR" ? "Observar" : "Vale conversar";
+            return [pdfSafe(it.name), intMap[it.intensity]||it.intensity, durMap[it.duration]||it.duration, cls];
+          });
+
+          doc.autoTable({
+            startY: y,
+            theme: "grid",
+            styles: { font: "helvetica", fontSize: 9.6, textColor:[31,23,21], cellPadding: 3.2, overflow:"linebreak" },
+            headStyles: { fillColor:[255,247,245], textColor:[31,23,21], fontStyle:"bold" },
+            margin: { left: margin, right: margin },
+            head: [["Sintoma","Intensidade","Duração","Resultado"]],
+            body: rows,
+            didDrawPage: function(data){ if(data.pageNumber > 1) pdfHeader(doc, pageW, margin); }
+          });
+
+          y = doc.lastAutoTable.finalY + 8;
+        }
+
+        y = sectionTitle(doc, "Checklist por trimestre (consulta rápida)", x, y, bottomY);
+
+        const triOrder = ["1º trimestre","2º trimestre","3º trimestre"];
+        for(const t of triOrder){
+          if(y + 10 > bottomY) y = newPage(doc);
+          doc.setFont("helvetica","bold");
+          doc.setFontSize(11);
+          doc.setTextColor(31,23,21);
+          doc.text(pdfSafe(t), x, y);
+          y += 4;
+
+          const rows = (checklist[t] || []).map(r => [pdfSafe(r.s), pdfSafe(r.n), pdfSafe(r.a)]);
+
+          doc.autoTable({
+            startY: y,
+            theme: "grid",
+            styles: { font: "helvetica", fontSize: 9.4, textColor:[31,23,21], cellPadding: 3.2, overflow:"linebreak" },
+            headStyles: { fillColor:[255,247,245], textColor:[31,23,21], fontStyle:"bold" },
+            margin: { left: margin, right: margin },
+            head: [["Situação","Normal","Observar / Vale conversar"]],
+            body: rows,
+            columnStyles: { 0:{cellWidth:44}, 1:{cellWidth:(maxW-44)/2}, 2:{cellWidth:(maxW-44)/2} },
+            didDrawPage: function(data){ if(data.pageNumber > 1) pdfHeader(doc, pageW, margin); }
+          });
+
+          y = doc.lastAutoTable.finalY + 8;
+        }
+
+        y = sectionTitle(doc, "Módulo 2 — O que fazer agora (3 saídas)", x, y, bottomY);
+
+        const guideRows = [
+          ["Normal", "Quando é tolerável e variável.", "Descansar e reduzir pesquisa."],
+          ["Observar", "Quando incomoda mas não derruba.", "2 linhas/dia: intensidade + o que melhora/piora."],
+          ["Conversar", "Quando persiste e te desgasta.", "Usar relato pronto e validar critério com profissional."]
+        ];
+
+        doc.autoTable({
+          startY: y,
+          theme: "grid",
+          styles: { font: "helvetica", fontSize: 9.6, textColor:[31,23,21], cellPadding: 3.3, overflow:"linebreak" },
+          headStyles: { fillColor:[255,247,245], textColor:[31,23,21], fontStyle:"bold" },
+          margin: { left: margin, right: margin },
+          head: [["Saída","Quando usar","O que fazer"]],
+          body: guideRows,
+          columnStyles: { 0:{cellWidth:28}, 1:{cellWidth:(maxW-28)*0.55}, 2:{cellWidth:(maxW-28)*0.45} },
+          didDrawPage: function(data){ if(data.pageNumber > 1) pdfHeader(doc, pageW, margin); }
+        });
+
+        y = doc.lastAutoTable.finalY + 8;
+
+        y = sectionTitle(doc, "Perguntas para levar ao profissional", x, y, bottomY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(31,23,21);
+        const qItems = Array.from(document.querySelectorAll("#qList li")).map(li=>li.textContent.trim()).filter(Boolean);
+        for(const q of qItems){
+          y = writeParagraph(doc, "• " + q, x, y, maxW, 5, bottomY);
+          y += 1;
+        }
+        y += 2;
+
+        y = sectionTitle(doc, "Módulo 3 — Relato pronto (completo)", x, y, bottomY);
+        doc.setFont("courier","normal");
+        doc.setFontSize(9.6);
+        doc.setTextColor(31,23,21);
+        y = writeParagraph(doc, (out.value||"").trim(), x, y, maxW, 4.6, bottomY);
+
+        if(y + 10 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(9);
+        doc.setTextColor(138,111,103);
+        doc.text("Limite: não faz diagnóstico clínico e não substitui pré-natal.", x, bottomY);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+        doc.save(`KIT_FASE0_GestacaoSemGoogle_${stamp}.pdf`);
+      }
+
+      document.getElementById("btnPDFTop").addEventListener("click", downloadKitPDF);
+      document.getElementById("btnPDFHere").addEventListener("click", downloadKitPDF);
+      document.getElementById("btnPDFFinal").addEventListener("click", downloadKitPDF);
+
+      // Reset total
+      document.getElementById("btnResetAll").addEventListener("click", ()=>{
+        document.getElementById("btnClearQuiz").click();
+        document.getElementById("week_m1").value = "";
+        rpicks.clear();
+        reportPills.forEach(p=>p.setAttribute("aria-pressed","false"));
+        document.getElementById("week").value = "";
+        out.value = "";
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+
+    })();
+  </script>
 </body>
 </html>
