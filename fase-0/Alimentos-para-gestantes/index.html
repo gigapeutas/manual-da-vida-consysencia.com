@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>FASE 0 — Informação contextual — Alimentação segura sem paranoia</title>
+
+  <style>
+    :root{
+      /* VISUAL: alimentação (cotidiano + calma). Nada médico, nada fitness. */
+      --bgA:#fbf7f0;
+      --bgB:#f7fbf4;
+      --bgC:#fbf7ff;
+
+      --paper: rgba(255,255,255,.90);
+      --paper2: rgba(255,255,255,.96);
+
+      --ink:#15181d;
+      --muted:#55606a;
+      --muted2:#738091;
+
+      --line: rgba(214,220,232,.70);
+      --shadow: 0 18px 58px rgba(16,18,26,.12);
+      --shadow2: 0 10px 26px rgba(16,18,26,.08);
+
+      --accent:#5b7a36;    /* oliva */
+      --accent2:#48622c;
+      --accentSoft: rgba(91,122,54,.14);
+
+      --warm:#b86a3a;      /* terracota suave */
+      --warm2:#9b5631;
+
+      --ok:#1d5a4b;
+      --okSoft: rgba(236,255,248,.96);
+      --okLine: rgba(160,229,205,.98);
+
+      --mid:#6b5a2f;
+      --midSoft: rgba(255,246,226,.92);
+      --midLine: rgba(235,211,160,.98);
+
+      --no:#7a2f2f;
+      --noSoft: rgba(255,235,235,.92);
+      --noLine: rgba(240,180,180,.98);
+
+      --r: 22px;
+      --r2: 16px;
+      --max: 1120px;
+
+      --focus: rgba(91,122,54,.22);
+      --headerH: 68px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font: 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 16% 0%, rgba(184,106,58,.14), transparent 58%),
+        radial-gradient(900px 520px at 86% 10%, rgba(91,122,54,.12), transparent 58%),
+        radial-gradient(900px 520px at 50% 115%, rgba(184,106,58,.10), transparent 55%),
+        linear-gradient(180deg, var(--bgA), var(--bgB) 55%, var(--bgC));
+      padding-top: calc(var(--headerH) + env(safe-area-inset-top));
+    }
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 14px 14px 96px; }
+
+    /* Header fixo (não tapa conteúdo) */
+    .topbar{
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+      display:flex; justify-content:center;
+      pointer-events:none;
+    }
+    .topbarInner{
+      pointer-events:auto;
+      width: min(var(--max), calc(100% - 20px));
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      padding: 8px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 220px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--warm);
+      box-shadow: 0 0 0 5px rgba(184,106,58,.14);
+    }
+    .brandTxt{ display:flex; flex-direction:column; line-height:1.1; }
+    .brandTxt b{ font-size: 13px; letter-spacing:.2px; }
+    .brandTxt span{ font-size: 12px; color: var(--muted); }
+
+    .actions{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.92);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:13.5px;
+      box-shadow: var(--shadow2);
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ border-color: rgba(184,106,58,.55); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus{ outline:none; box-shadow:0 0 0 4px var(--focus), var(--shadow2); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, var(--warm), var(--warm2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.oliva{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{ background: rgba(255,255,255,.62); color: var(--muted); }
+    .btn.icon{ padding:10px 12px; }
+
+    @media (max-width:760px){
+      .brandTxt span{ display:none; }
+      .btn.pdfTxt span{ display:none; }
+      .btn{ padding:10px 12px; }
+    }
+
+    /* Drawer menu */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(10,14,12,.33);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+    }
+    .overlay.on{ opacity:1; pointer-events:auto; }
+    .drawer{
+      position: fixed; top:0; right:0; height:100%;
+      width: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 70;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex; flex-direction:column;
+      padding-top: env(safe-area-inset-top);
+    }
+    .drawer.on{ transform: translateX(0); }
+    .drawerHd{
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 18% 0%, rgba(184,106,58,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .drawerHd .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .drawerHd h3{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .drawerHd p{ margin:8px 0 0; color: var(--muted); font-size:13.2px; }
+    .drawerBd{ padding: 12px 16px 16px; display:grid; gap:10px; overflow:auto; }
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.90);
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navItem b{ display:block; }
+    .navItem span{ display:block; margin-top:4px; color: var(--muted); font-size:13px; }
+    .navItem:hover{ border-color: rgba(184,106,58,.45); }
+
+    section[id]{ scroll-margin-top: calc(var(--headerH) + env(safe-area-inset-top) + 14px); }
+
+    .hero{
+      border:1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-60px -50px auto auto;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle at 35% 35%, rgba(184,106,58,.18), transparent 62%);
+      filter: blur(1px);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:12px;
+      align-items:center;
+    }
+    @media (max-width:920px){ .heroGrid{ grid-template-columns: 1fr; } }
+
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.3px; }
+    .hero p{ margin: 8px 0 0; color: var(--muted); max-width: 96ch; font-size: 14.2px; }
+
+    .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.90);
+      color: var(--muted);
+      font-size: 12.8px;
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--paper2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 16% 0%, rgba(184,106,58,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .hd h2{ margin:0; font-size:15px; letter-spacing:.2px; }
+    .meta{ margin-top:6px; font-size:13.4px; color:var(--muted); max-width: 96ch; }
+    .bd{ padding:14px; }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    @media (max-width:920px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      border-radius: var(--r2);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .panel h3{ margin:0 0 8px; font-size:14px; letter-spacing:.15px; }
+    .small{ font-size:13px; color:var(--muted); }
+
+    label{ display:block; font-weight:950; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input, select, textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+    textarea{
+      min-height: 210px;
+      font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    input:focus, select:focus, textarea:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(251,247,240,.88);
+      color: var(--muted);
+      font-size:13.4px;
+    }
+
+    .pickGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+    @media (max-width:760px){ .pickGrid{ grid-template-columns: 1fr; } }
+
+    .pick{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      user-select:none;
+      transition: border-color .2s ease, transform .05s ease;
+    }
+    .pick:hover{ border-color: rgba(184,106,58,.45); }
+    .pick:active{ transform: translateY(1px); }
+    .pick input{
+      width:auto; box-shadow:none; margin-top:3px;
+      transform:scale(1.12); accent-color: var(--warm);
+    }
+    .pick b{ display:block; }
+    .pick span{ display:block; color:var(--muted); font-size:13px; margin-top:4px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      color: var(--muted);
+      width: fit-content;
+      user-select:none;
+    }
+    .bOk{ background: var(--okSoft); border-color: var(--okLine); color: var(--ok); }
+    .bMid{ background: var(--midSoft); border-color: var(--midLine); color: var(--mid); }
+    .bNo{ background: var(--noSoft); border-color: var(--noLine); color: var(--no); }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .resultBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+
+    .block{
+      border:1px solid rgba(214,220,232,.70);
+      border-radius: 14px;
+      padding:10px;
+      background: rgba(255,255,255,.92);
+    }
+    .okBox{ background: var(--okSoft); border-color: var(--okLine); }
+    .midBox{ background: var(--midSoft); border-color: var(--midLine); }
+    .noBox{ background: var(--noSoft); border-color: var(--noLine); }
+
+    .block b{ display:block; }
+    .block ul{ margin:8px 0 0; padding-left: 18px; }
+    .block li{ margin: 4px 0; color: var(--ink); }
+    .block .small{ margin-top:6px; }
+
+    .ctaFinal{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .fine{ margin-top:12px; color: var(--muted2); font-size: 13.2px; }
+
+    .illu{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 170px;
+    }
+    svg{ max-width:100%; height:auto; }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="topbar">
+    <div class="topbarInner" id="topbarInner">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brandTxt">
+          <b>Manual da VidA · FASE 0</b>
+          <span>Alimentação segura sem paranoia</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn icon" id="btnMenu" type="button" aria-haspopup="dialog" aria-controls="drawer" aria-expanded="false">☰ <span>Menu</span></button>
+        <button class="btn primary pdfTxt" id="btnPDFTop" type="button">⬇️ <span>PDF do dia</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerHd">
+      <div class="row">
+        <h3>Navegação</h3>
+        <button class="btn ghost icon" id="btnCloseMenu" type="button">✕</button>
+      </div>
+      <p>Escolha uma sessão. O menu fecha e você cai no ponto certo.</p>
+    </div>
+    <div class="drawerBd">
+      <div class="navItem" data-go="start">
+        <b>Início</b><span>O que é + como usar.</span>
+      </div>
+      <div class="navItem" data-go="q">
+        <b>1) Cenário do dia</b><span>Escolhas rápidas.</span>
+      </div>
+      <div class="navItem" data-go="res">
+        <b>2) Guia do dia</b><span>Ok / Atenção / Evitar + alternativas.</span>
+      </div>
+      <div class="navItem" data-go="summary">
+        <b>Resumo + PDF</b><span>Texto copiável + baixar.</span>
+      </div>
+      <div class="navItem" id="navPdf">
+        <b>Baixar PDF agora</b><span>Exporta o guia do dia.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="start">
+      <div class="heroGrid">
+        <div>
+          <h1>FASE 0 — Informação contextual — Alimentação segura sem paranoia</h1>
+          <p>
+            Um guia prático para reduzir dúvida, culpa e “pesquisa infinita”. Você escolhe o cenário do dia e o kit entrega
+            <b>três blocos claros</b>: <b>Ok</b>, <b>Vale atenção</b> e <b>Evitar por risco real</b> — com alternativas simples.
+            No final: <b>resumo copiável</b> e <b>PDF do dia</b> (1 página).
+          </p>
+
+          <div class="chips">
+            <span class="chip">Sem terrorismo</span>
+            <span class="chip">Sem dieta</span>
+            <span class="chip">Decisão rápida</span>
+            <span class="chip">Reutilizável</span>
+          </div>
+
+          <div class="hint">
+            Limite: não substitui pré-natal/nutricionista. Se você tiver restrições específicas (diabetes gestacional, alergias,
+            hipertensão, etc.), use o kit como organização e valide com seu profissional.
+          </div>
+        </div>
+
+        <div class="illu" aria-label="Ilustração de alimentação em paz">
+          <svg viewBox="0 0 520 300" role="img" aria-hidden="true">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="rgba(184,106,58,.16)"/>
+                <stop offset="1" stop-color="rgba(91,122,54,.12)"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0" stop-color="#b86a3a"/>
+                <stop offset="1" stop-color="#9b5631"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="500" height="280" rx="26" fill="url(#g1)" stroke="rgba(214,220,232,.9)"/>
+            <circle cx="190" cy="155" r="62" fill="rgba(255,255,255,.78)"/>
+            <circle cx="190" cy="155" r="44" fill="rgba(255,246,226,.92)"/>
+            <path d="M140 155 C160 125, 220 125, 240 155 C220 185, 160 185, 140 155 Z" fill="url(#g2)" opacity=".9"/>
+            <rect x="290" y="110" width="160" height="18" rx="9" fill="rgba(255,255,255,.72)"/>
+            <rect x="290" y="140" width="200" height="18" rx="9" fill="rgba(255,255,255,.72)"/>
+            <rect x="290" y="170" width="130" height="18" rx="9" fill="rgba(255,255,255,.72)"/>
+            <text x="42" y="265" font-size="14" fill="rgba(85,96,106,.95)" font-family="system-ui, -apple-system, Segoe UI">
+              Objetivo: comer em paz (decisao simples)
+            </text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- SELEÇÕES -->
+    <section class="card" id="q">
+      <div class="hd">
+        <h2>1) Cenário do dia</h2>
+        <div class="meta">Escolha o cenário. O botão <b>Gerar guia</b> fica no final do módulo (fluxo fluido).</div>
+      </div>
+
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Contexto</h3>
+            <div class="grid2">
+              <div>
+                <label>Semana</label>
+                <input id="week" inputmode="numeric" placeholder="Ex.: 12"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date" placeholder="Ex.: 18/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <label>Você vai comer...</label>
+            <select id="where">
+              <option value="Em casa (refeição comum)">Em casa (refeição comum)</option>
+              <option value="Fora de casa (restaurante/rua)">Fora de casa (restaurante/rua)</option>
+              <option value="Sem apetite (quase nada desce)">Sem apetite (quase nada desce)</option>
+              <option value="Com enjoo (sensível a cheiros)">Com enjoo (sensível a cheiros)</option>
+              <option value="Dia cansativo (pouca energia)">Dia cansativo (pouca energia)</option>
+            </select>
+
+            <div class="hint">
+              O kit não te “julga”. Ele organiza decisão: <b>ok</b>, <b>atenção</b>, <b>evitar</b> e alternativas simples.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Prévia</h3>
+            <div id="badge" class="badge bMid">Selecione o cenário e gere o guia</div>
+            <div id="preview" class="small" style="margin-top:10px;">
+              Você vai receber: listas claras + “por quê” em 1 linha + alternativas + resumo + PDF.
+            </div>
+
+            <div class="footer">
+              <button class="btn" id="btnClear" type="button">Limpar</button>
+              <button class="btn ghost" id="btnGoRes" type="button">Ir para guia</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Preferência do dia (opcional)</h3>
+          <label class="small">Ajuda a deixar o guia mais realista (sem virar dieta).</label>
+          <select id="pref">
+            <option value="">(opcional) sem preferência</option>
+            <option value="quero algo bem simples">Quero algo bem simples</option>
+            <option value="quero algo leve">Quero algo leve</option>
+            <option value="quero algo mais completo">Quero algo mais completo</option>
+            <option value="vou beliscar ao longo do dia">Vou beliscar ao longo do dia</option>
+          </select>
+
+          <!-- BOTÃO NO FINAL (usabilidade) -->
+          <div class="footer">
+            <button class="btn primary" id="btnGen" type="button">Gerar guia de hoje</button>
+            <button class="btn ghost" id="btnHintScroll" type="button">Ver guia gerado</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADO -->
+    <section class="card" id="res">
+      <div class="hd">
+        <h2>2) Guia do dia</h2>
+        <div class="meta">Três blocos consistentes: <b>Ok</b>, <b>Atenção</b>, <b>Evitar por risco real</b> + alternativas.</div>
+      </div>
+
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Ok comer hoje</h3>
+            <div id="boxOK" class="resultBox">
+              <div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Vale atenção (sem pânico)</h3>
+            <div id="boxMID" class="resultBox">
+              <div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Evitar por risco real</h3>
+          <div id="boxNO" class="resultBox">
+            <div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>
+          </div>
+          <div class="hint">
+            “Evitar” aqui significa: <b>vale não arriscar</b>. Não é pra gerar medo, é só pra reduzir incerteza.
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Alternativas simples (se você estiver sem energia)</h3>
+          <div id="boxALT" class="resultBox">
+            <div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>
+          </div>
+
+          <div class="footer">
+            <button class="btn oliva" id="btnCopyGuide" type="button">Copiar guia</button>
+            <button class="btn ghost" id="btnGoSummary" type="button">Ir para resumo</button>
+          </div>
+        </div>
+
+        <div class="ctaFinal">
+          <div class="small">
+            Para salvar e repetir sem pensar: baixe o PDF do dia (1 página).
+          </div>
+          <button class="btn primary" id="btnPDFFinal" type="button">Baixar PDF do dia</button>
+        </div>
+
+        <div class="fine">
+          Limite: isso não é plano alimentar. Objetivo: reduzir carga cognitiva e medo, com decisão simples.
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUMO + PDF -->
+    <section class="card" id="summary">
+      <div class="hd">
+        <h2>Resumo do dia + PDF</h2>
+        <div class="meta">Registro curto para copiar, salvar e usar no pré-natal se quiser.</div>
+      </div>
+
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Gerar resumo</h3>
+            <div class="footer" style="margin-top:0;">
+              <button class="btn primary" id="btnGenSummary" type="button">Gerar resumo do dia</button>
+              <button class="btn" id="btnCopyAll" type="button">Copiar resumo</button>
+              <button class="btn primary" id="btnPDFHere" type="button">⬇ Baixar PDF</button>
+            </div>
+
+            <div class="hint">
+              PDF sem caracteres estranhos: sem emojis e sem símbolos que quebram exportação.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Resumo (copiável)</h3>
+            <textarea id="out" readonly placeholder="Clique em “Gerar resumo do dia”..."></textarea>
+          </div>
+        </div>
+
+        <div class="ctaFinal">
+          <div class="small">Reset total limpa tudo e volta ao topo.</div>
+          <button class="btn" id="btnResetAll" type="button">Resetar (voltar ao topo)</button>
+        </div>
+
+        <div class="fine">
+          Regra do Manual da Vida: se gerar ansiedade ou exigir persuasão, falhou. Aqui é clareza e previsibilidade.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    (function(){
+      // ===== Ajuste dinâmico do header (anti-overlap) =====
+      const topbarInner = document.getElementById("topbarInner");
+      function setHeaderH(){
+        const r = topbarInner.getBoundingClientRect();
+        const pillH = Math.ceil(r.height + 22);
+        document.documentElement.style.setProperty("--headerH", pillH + "px");
+      }
+      setHeaderH();
+      window.addEventListener("resize", setHeaderH);
+      window.addEventListener("orientationchange", setHeaderH);
+      if(window.visualViewport){
+        window.visualViewport.addEventListener("resize", setHeaderH);
+        window.visualViewport.addEventListener("scroll", setHeaderH);
+      }
+      setTimeout(setHeaderH, 120);
+
+      // ===== Drawer =====
+      const overlay = document.getElementById("overlay");
+      const drawer  = document.getElementById("drawer");
+      const btnMenu = document.getElementById("btnMenu");
+      const btnCloseMenu = document.getElementById("btnCloseMenu");
+
+      function openMenu(){
+        overlay.hidden = false;
+        overlay.classList.add("on");
+        drawer.classList.add("on");
+        drawer.setAttribute("aria-hidden","false");
+        btnMenu.setAttribute("aria-expanded","true");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMenu(){
+        overlay.classList.remove("on");
+        drawer.classList.remove("on");
+        drawer.setAttribute("aria-hidden","true");
+        btnMenu.setAttribute("aria-expanded","false");
+        document.body.style.overflow = "";
+        setTimeout(()=>{ overlay.hidden = true; }, 200);
+      }
+      btnMenu.addEventListener("click", ()=>{
+        const expanded = btnMenu.getAttribute("aria-expanded")==="true";
+        expanded ? closeMenu() : openMenu();
+      });
+      btnCloseMenu.addEventListener("click", closeMenu);
+      overlay.addEventListener("click", closeMenu);
+      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeMenu(); });
+
+      document.querySelectorAll(".navItem[data-go]").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.dataset.go;
+          closeMenu();
+          setTimeout(()=> document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"}), 60);
+        });
+      });
+      document.getElementById("navPdf").addEventListener("click", ()=>{
+        closeMenu();
+        setTimeout(()=> downloadPDF(), 80);
+      });
+
+      // ===== Defaults date =====
+      const dateEl = document.getElementById("date");
+      const weekEl = document.getElementById("week");
+      (function initDate(){
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        if(!dateEl.value) dateEl.value = `${dd}/${mm}/${yy}`;
+      })();
+
+      // ===== Elements =====
+      const whereEl = document.getElementById("where");
+      const prefEl  = document.getElementById("pref");
+      const badge   = document.getElementById("badge");
+      const preview = document.getElementById("preview");
+
+      const boxOK  = document.getElementById("boxOK");
+      const boxMID = document.getElementById("boxMID");
+      const boxNO  = document.getElementById("boxNO");
+      const boxALT = document.getElementById("boxALT");
+      const out    = document.getElementById("out");
+
+      function esc(s){
+        return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      }
+      function setBadge(text, kind){
+        badge.textContent = text;
+        badge.classList.remove("bOk","bMid","bNo");
+        if(kind==="OK") badge.classList.add("bOk");
+        else if(kind==="NO") badge.classList.add("bNo");
+        else badge.classList.add("bMid");
+      }
+
+      function updatePreview(){
+        const w = whereEl.value;
+        const p = prefEl.value;
+        setBadge("Cenário pronto (clique em Gerar guia)", "OK");
+        preview.innerHTML = `
+          <b>Cenário:</b> ${esc(w)}<br/>
+          <b>Preferência:</b> ${esc(p || "—")}<br/>
+          <span class="small">Clique em <b>Gerar guia de hoje</b> (no final do módulo).</span>
+        `;
+      }
+      whereEl.addEventListener("change", updatePreview);
+      prefEl.addEventListener("change", updatePreview);
+      updatePreview();
+
+      // ===== Conteúdo (simples, seguro, sem terrorismo) =====
+      const DATA = {
+        "Em casa (refeição comum)": {
+          ok: [
+            ["Arroz, feijão, legumes bem cozidos", "Base segura e comum do dia a dia."],
+            ["Frutas bem lavadas (ou descascadas)", "Reduz exposição a sujeira/micróbios."],
+            ["Ovos bem cozidos / omelete bem passado", "Cozimento reduz risco."],
+            ["Carne bem passada / frango bem cozido", "Evita carne crua e diminui risco."],
+            ["Leite e derivados pasteurizados", "Escolha pasteurizados para mais segurança."]
+          ],
+          mid: [
+            ["Doces e ultraprocessados em excesso", "Pode piorar indisposição e refluxo; escolha porção menor."],
+            ["Cafeína alta", "Se perceber palpitação/ansiedade, reduza."],
+            ["Comida muito gordurosa à noite", "Pode piorar refluxo e sono."]
+          ],
+          no: [
+            ["Carnes/ovos crus ou malpassados", "Risco de contaminação; melhor não arriscar."],
+            ["Leite cru / queijo não pasteurizado", "Risco evitável; prefira pasteurizado."],
+            ["Peixe cru (sushi) e frutos do mar crus", "Risco evitável; prefira cozido."]
+          ],
+          alt: [
+            ["Sem energia? Montagem rápida: arroz + feijão + ovo bem cozido", "Simples, seguro e sustenta."],
+            ["Enjoo leve: torrada + fruta lavada/descascada", "Mais tolerável para o estômago."],
+            ["Hidratação: água + fruta + algo salgado leve", "Ajuda quando o apetite oscila."]
+          ]
+        },
+
+        "Fora de casa (restaurante/rua)": {
+          ok: [
+            ["Pratos bem cozidos (PF, sopas bem quentes)", "Calor e cozimento aumentam segurança."],
+            ["Carne bem passada / frango bem cozido", "Evita risco de malpassado."],
+            ["Saladas apenas se confiar na higiene", "Se tiver dúvida, prefira cozidos."]
+          ],
+          mid: [
+            ["Maionese/cremes fora de refrigeração", "Se ficou muito tempo fora, melhor evitar."],
+            ["Buffet com comida morna", "Se não estiver bem quente, prefira outro item."],
+            ["Gelo/água de procedência duvidosa", "Se não confiar, escolha água lacrada."]
+          ],
+          no: [
+            ["Sushi/peixe cru", "Risco evitável; prefira versões cozidas."],
+            ["Ovo mole/malpassado", "Evite por segurança."],
+            ["Leite/queijos sem certeza de pasteurização", "Se não souber, melhor não arriscar."]
+          ],
+          alt: [
+            ["Escolha segura universal: prato bem quente + proteína bem cozida", "Regra simples para reduzir dúvida."],
+            ["Sem opção boa? Sanduíche quente bem feito", "Prefira quente e preparado na hora."],
+            ["Ansiedade na escolha? Peça o básico e coma em paz", "A decisão simples reduz estresse."]
+          ]
+        },
+
+        "Sem apetite (quase nada desce)": {
+          ok: [
+            ["Pequenas porções ao longo do dia", "Menos esforço e mais tolerável."],
+            ["Carboidratos leves (arroz, batata, macarrão simples)", "Geralmente desce melhor."],
+            ["Frutas descascadas / iogurte pasteurizado", "Opções leves e comuns."]
+          ],
+          mid: [
+            ["Pular muitas horas sem comer", "Pode piorar fraqueza/enjoo; tente beliscar algo."],
+            ["Comidas muito condimentadas", "Pode piorar estômago sensível."]
+          ],
+          no: [
+            ["Qualquer alimento cru de risco (ovos/carnes/peixe)", "Quando o corpo está sensível, não vale arriscar."],
+            ["Leite cru / não pasteurizado", "Risco evitável."]
+          ],
+          alt: [
+            ["Plano mínimo: algo seco + algo frio + água", "Ex.: torrada + fruta + água."],
+            ["Se nada desce: 3 mordidas é vitória", "Meta realista reduz culpa."],
+            ["Se persistir por dias e atrapalhar hidratação", "Vale validar com profissional."]
+          ]
+        },
+
+        "Com enjoo (sensível a cheiros)": {
+          ok: [
+            ["Comidas frias/leves (fruta, sanduíche frio simples)", "Cheiro menos forte pode ajudar."],
+            ["Biscoito água e sal / torrada", "Clássico para reduzir enjoo."],
+            ["Refeições pequenas e frequentes", "Evita estômago vazio demais."]
+          ],
+          mid: [
+            ["Alimentos muito gordurosos", "Pode aumentar náusea e refluxo."],
+            ["Cheiros fortes na cozinha", "Se possível, peça ajuda/ventile."]
+          ],
+          no: [
+            ["Alimentos crus de risco (peixe/carne/ovos)", "Não vale somar risco com enjoo."],
+            ["Leite cru / não pasteurizado", "Risco evitável."]
+          ],
+          alt: [
+            ["Estratégia: comer antes do enjoo ficar forte", "Pequeno antes costuma funcionar melhor."],
+            ["Se cheiros incomodam: comida pronta e simples", "Menos preparo, menos estímulo."],
+            ["Se enjoo intenso e persistente", "Vale conversar com profissional para aliviar com segurança."]
+          ]
+        },
+
+        "Dia cansativo (pouca energia)": {
+          ok: [
+            ["Prato pronto simples (arroz/feijão + proteína bem cozida)", "Decisão rápida e segura."],
+            ["Congelados caseiros bem aquecidos", "Se estiver bem quente, é uma boa saída."],
+            ["Fruta lavada/descascada + iogurte pasteurizado", "Combinação prática e comum."]
+          ],
+          mid: [
+            ["Pedido de delivery muito gorduroso", "Pode piorar refluxo e sono."],
+            ["Excesso de açúcar para “energia”", "Pode dar pico e queda; prefira algo mais estável."]
+          ],
+          no: [
+            ["Comida malpassada/crua", "Cansaço aumenta chance de “deixar passar”; não vale."],
+            ["Leite cru / não pasteurizado", "Risco evitável."]
+          ],
+          alt: [
+            ["Regra do dia cansativo: quente + cozido + simples", "Reduz risco e esforço mental."],
+            ["Se só der para beliscar: carbo leve + proteína cozida", "Ex.: pão + ovo bem passado."],
+            ["Sem culpa: hoje é sobre estabilidade, não perfeição", "Isso protege seu bem-estar."]
+          ]
+        }
+      };
+
+      // ===== Geração =====
+      let last = null;
+
+      function renderList(items){
+        return `<ul>${items.map(i=> `<li><b>${esc(i[0])}</b> — <span class="small">${esc(i[1])}</span></li>`).join("")}</ul>`;
+      }
+
+      function buildGuide(){
+        const where = whereEl.value;
+        const pref  = (prefEl.value||"").trim();
+
+        const pack = DATA[where];
+        if(!pack) return null;
+
+        // Ajuste leve por preferência (sem dieta)
+        const ok = [...pack.ok];
+        const mid = [...pack.mid];
+        const no  = [...pack.no];
+        const alt = [...pack.alt];
+
+        if(pref.includes("bem simples")){
+          alt.unshift(["Atalho: 1 base + 1 proteína bem cozida", "Ex.: arroz + ovo bem passado. Simples e suficiente hoje."]);
+        }
+        if(pref.includes("leve")){
+          ok.unshift(["Leve e seguro: frutas lavadas/descascadas + carbo simples", "Menos peso no estômago pode ajudar."]);
+          mid.unshift(["Muito tempero / fritura", "Se notar piora, escolha versão mais simples."]);
+        }
+        if(pref.includes("mais completo")){
+          ok.unshift(["Completo sem paranoia: prato com base + proteína cozida + legume", "Estrutura estável sem excesso de regra."]);
+        }
+        if(pref.includes("beliscar")){
+          alt.unshift(["Ritmo de belisco: 3–5 pequenas entradas", "Reduz esforço e pode ajudar enjoo/ansiedade."]);
+        }
+
+        boxOK.innerHTML = `
+          <div class="block okBox">
+            <b>Ok comer hoje</b>
+            ${renderList(ok)}
+            <div class="small" style="margin-top:8px;">Regra: prefira <b>cozido</b>, <b>pasteurizado</b> e <b>bem quente</b> quando estiver em dúvida.</div>
+          </div>
+        `;
+
+        boxMID.innerHTML = `
+          <div class="block midBox">
+            <b>Vale atenção (sem pânico)</b>
+            ${renderList(mid)}
+            <div class="small" style="margin-top:8px;">Atenção = ajuste simples, não alarme. Se te deixa ansiosa, escolha o básico e siga.</div>
+          </div>
+        `;
+
+        boxNO.innerHTML = `
+          <div class="block noBox">
+            <b>Evitar por risco real</b>
+            ${renderList(no)}
+            <div class="small" style="margin-top:8px;">Evitar = “não vale arriscar”. A intenção é reduzir dúvida, não criar medo.</div>
+          </div>
+        `;
+
+        boxALT.innerHTML = `
+          <div class="block">
+            <b>Alternativas simples</b>
+            ${renderList(alt)}
+            <div class="small" style="margin-top:8px;">Se bater culpa: hoje a meta é <b>segurança + calma</b>, não perfeição.</div>
+          </div>
+        `;
+
+        setBadge("Guia gerado (pronto para usar)", "OK");
+
+        const summary = genSummaryInternal({ where, pref, ok, mid, no, alt });
+        last = { where, pref, ok, mid, no, alt, summary };
+
+        return last;
+      }
+
+      function genSummaryInternal(p){
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+
+        function linesFrom(list){
+          return list.map(i=> `- ${i[0]} (por que: ${i[1]})`).join("\n");
+        }
+
+        const lines = [];
+        lines.push("RESUMO — Manual da VidA (FASE 0 — Gestacao)");
+        lines.push("Produto: Informacao contextual — Alimentacao segura sem paranoia");
+        lines.push(`Data: ${date || "-"}   |   Semana: ${week || "-"}`);
+        lines.push("");
+        lines.push(`Cenario: ${p.where}`);
+        if(p.pref) lines.push(`Preferencia: ${p.pref}`);
+        lines.push("");
+        lines.push("OK comer hoje:");
+        lines.push(linesFrom(p.ok));
+        lines.push("");
+        lines.push("Vale atencao (sem panico):");
+        lines.push(linesFrom(p.mid));
+        lines.push("");
+        lines.push("Evitar por risco real:");
+        lines.push(linesFrom(p.no));
+        lines.push("");
+        lines.push("Alternativas simples:");
+        lines.push(linesFrom(p.alt));
+        lines.push("");
+        lines.push("Limite: nao e plano alimentar e nao substitui acompanhamento. Objetivo: reduzir duvida, culpa e carga cognitiva.");
+        return lines.join("\n");
+      }
+
+      // ===== Buttons / UX =====
+      document.getElementById("btnGen").addEventListener("click", ()=>{
+        const g = buildGuide();
+        if(g){
+          document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+        }
+      });
+
+      document.getElementById("btnHintScroll").addEventListener("click", ()=>{
+        document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnGoRes").addEventListener("click", ()=>{
+        document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnGoSummary").addEventListener("click", ()=>{
+        document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnClear").addEventListener("click", ()=>{
+        prefEl.value = "";
+        updatePreview();
+        boxOK.innerHTML  = `<div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>`;
+        boxMID.innerHTML = `<div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>`;
+        boxNO.innerHTML  = `<div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>`;
+        boxALT.innerHTML = `<div class="small">Gere o guia no Módulo 1 para aparecer aqui.</div>`;
+        out.value = "";
+        last = null;
+        setBadge("Selecione o cenário e gere o guia", "MID");
+      });
+
+      function copyText(txt, btn){
+        const text = (txt||"").trim();
+        if(!text) return;
+        navigator.clipboard.writeText(text).then(()=>{
+          const old = btn.textContent;
+          btn.textContent = "Copiado";
+          setTimeout(()=> btn.textContent = old, 900);
+        }).catch(()=>{
+          out.value = text;
+          out.focus(); out.select(); document.execCommand("copy");
+        });
+      }
+
+      document.getElementById("btnCopyGuide").addEventListener("click", ()=>{
+        if(!last) last = buildGuide();
+        if(!last) return;
+        const txt =
+          `GUIA DE HOJE — Alimentacao segura sem paranoia\n` +
+          `Cenario: ${last.where}\n` +
+          (last.pref ? `Preferencia: ${last.pref}\n` : ``) +
+          `\nOK:\n` + last.ok.map(i=> `- ${i[0]} (${i[1]})`).join("\n") +
+          `\n\nAtencao:\n` + last.mid.map(i=> `- ${i[0]} (${i[1]})`).join("\n") +
+          `\n\nEvitar:\n` + last.no.map(i=> `- ${i[0]} (${i[1]})`).join("\n") +
+          `\n\nAlternativas:\n` + last.alt.map(i=> `- ${i[0]} (${i[1]})`).join("\n");
+        copyText(txt, document.getElementById("btnCopyGuide"));
+      });
+
+      document.getElementById("btnGenSummary").addEventListener("click", ()=>{
+        if(!last){
+          last = buildGuide();
+          if(!last) return;
+        }
+        out.value = last.summary || "";
+        document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnCopyAll").addEventListener("click", ()=>{
+        const txt = (out.value||"").trim();
+        if(!txt) return;
+        copyText(txt, document.getElementById("btnCopyAll"));
+      });
+
+      // ===== PDF (sem texto estranho) =====
+      function pdfSafe(text){
+        if(text == null) return "";
+        let s = String(text);
+
+        // remove emojis / variações que quebram render
+        s = s.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+        s = s.replace(/[\uFE0E\uFE0F]/g, "");
+        s = s.replace(/[\u200D]/g, "");
+
+        // normalizações
+        s = s.replace(/[×]/g, "x");
+        s = s.replace(/[—–]/g, "-");
+        s = s.replace(/[“”]/g, '"');
+        s = s.replace(/[’]/g, "'");
+        s = s.replace(/[•]/g, "-");
+
+        s = s.replace(/\r/g, "");
+        s = s.replace(/[ \t]+\n/g, "\n").replace(/\n[ \t]+/g, "\n");
+        return s;
+      }
+
+      function pdfHeader(doc, pageW, margin){
+        doc.setFillColor(251, 247, 240);
+        doc.rect(0,0,pageW,26,"F");
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(21,24,29);
+        doc.setFontSize(13.5);
+        doc.text("FASE 0 - Alimentacao segura sem paranoia", margin, 12);
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(85,96,106);
+        doc.setFontSize(9.6);
+        doc.text("Guia do dia (ok / atencao / evitar). Nao e plano alimentar.", margin, 18);
+      }
+
+      function newPage(doc){
+        doc.addPage();
+        const pageW = doc.internal.pageSize.getWidth();
+        pdfHeader(doc, pageW, 14);
+        return 32;
+      }
+
+      function writeParagraph(doc, text, x, y, maxW, lineH, bottomY){
+        const lines = doc.splitTextToSize(pdfSafe(text), maxW);
+        for(const ln of lines){
+          if(y + lineH > bottomY) y = newPage(doc);
+          doc.text(ln, x, y);
+          y += lineH;
+        }
+        return y;
+      }
+
+      function sectionTitle(doc, title, x, y, bottomY){
+        if(y + 8 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.setTextColor(21,24,29);
+        doc.text(pdfSafe(title), x, y);
+        return y + 6;
+      }
+
+      function downloadPDF(){
+        if(!window.jspdf || !window.jspdf.jsPDF){
+          alert("Falha ao carregar biblioteca de PDF (jsPDF). Verifique sua conexão e recarregue a página.");
+          return;
+        }
+        if(!last){
+          last = buildGuide();
+          if(!last) return;
+        }
+        if(!(out.value||"").trim()){
+          out.value = last.summary || "";
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit:"mm", format:"a4" });
+
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const margin = 14;
+        const x = margin;
+        const maxW = pageW - margin*2;
+        const bottomY = pageH - 14;
+
+        pdfHeader(doc, pageW, margin);
+        let y = 32;
+
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(21,24,29);
+        y = writeParagraph(doc, `Data: ${date || "-"}   |   Semana: ${week || "-"}   |   Cenario: ${last.where}`, x, y, maxW, 5, bottomY);
+        if(last.pref) y = writeParagraph(doc, `Preferencia: ${last.pref}`, x, y, maxW, 5, bottomY);
+        y += 2;
+
+        function listToText(list){
+          return list.map(i=> `- ${i[0]} (por que: ${i[1]})`).join("\n");
+        }
+
+        y = sectionTitle(doc, "OK comer hoje", x, y, bottomY);
+        doc.setFont("helvetica","normal"); doc.setFontSize(10);
+        y = writeParagraph(doc, listToText(last.ok), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Vale atencao (sem panico)", x, y, bottomY);
+        doc.setFont("helvetica","normal"); doc.setFontSize(10);
+        y = writeParagraph(doc, listToText(last.mid), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Evitar por risco real", x, y, bottomY);
+        doc.setFont("helvetica","normal"); doc.setFontSize(10);
+        y = writeParagraph(doc, listToText(last.no), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Alternativas simples", x, y, bottomY);
+        doc.setFont("helvetica","normal"); doc.setFontSize(10);
+        y = writeParagraph(doc, listToText(last.alt), x, y, maxW, 5, bottomY);
+
+        if(y + 10 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(9);
+        doc.setTextColor(115,128,145);
+        doc.text("Limite: nao e plano alimentar. Objetivo: reduzir duvida, culpa e carga cognitiva.", x, bottomY);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+        doc.save(`FASE0_AlimentacaoSemParanoia_${stamp}.pdf`);
+      }
+
+      document.getElementById("btnPDFTop").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFHere").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFFinal").addEventListener("click", downloadPDF);
+
+      // ===== Reset total =====
+      document.getElementById("btnResetAll").addEventListener("click", ()=>{
+        document.getElementById("btnClear").click();
+        weekEl.value = "";
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+
+    })();
+  </script>
+</body>
+</html>
