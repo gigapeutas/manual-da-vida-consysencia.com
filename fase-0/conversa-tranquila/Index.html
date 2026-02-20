@@ -1,0 +1,1332 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>FASE 0 — Relações — Conversar sem conflito</title>
+
+  <style>
+    :root{
+      /* Visual adaptado: RELAÇÕES (calmo + humano, sem “Google Forms”) */
+      --bg1:#fff7f2;   /* quente suave */
+      --bg2:#f5fbf8;   /* verde bem leve */
+      --bg3:#f3f2ff;   /* lavanda sutil */
+
+      --paper: rgba(255,255,255,.90);
+      --paper2: rgba(255,255,255,.96);
+
+      --ink:#1a1a1f;
+      --muted:#586066;
+      --muted2:#74808a;
+
+      --line: rgba(220,210,202,.78);
+      --shadow: 0 18px 58px rgba(18,16,22,.12);
+      --shadow2: 0 10px 26px rgba(18,16,22,.08);
+
+      --accent:#a85a52;      /* terracota elegante */
+      --accent2:#8f4a43;
+      --accentSoft: rgba(168,90,82,.14);
+
+      --calm:#4b8f7b;        /* verde calmo */
+      --calm2:#3d7766;
+      --calmSoft: rgba(75,143,123,.14);
+
+      --lav:#6a63b7;         /* lavanda */
+      --lavSoft: rgba(106,99,183,.14);
+
+      --okBg: rgba(236,255,248,.96);
+      --okLine: rgba(160,229,205,.98);
+      --okInk:#165347;
+
+      --midBg: rgba(255,247,232,.96);
+      --midLine: rgba(244,214,156,.96);
+      --midInk:#6d4b13;
+
+      --talkBg: rgba(246,242,255,.96);
+      --talkLine: rgba(216,199,255,.98);
+      --talkInk:#33235f;
+
+      --r: 20px;
+      --r2: 16px;
+      --max: 1120px;
+
+      --focus: rgba(168,90,82,.22);
+      --headerH: 64px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font: 16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 18% 0%, rgba(168,90,82,.16), transparent 58%),
+        radial-gradient(900px 520px at 86% 20%, rgba(75,143,123,.12), transparent 58%),
+        radial-gradient(900px 520px at 50% 110%, rgba(106,99,183,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2) 55%, var(--bg3));
+      padding-top: calc(var(--headerH) + env(safe-area-inset-top));
+    }
+
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 14px 14px 96px; }
+
+    /* Header fixo (sem tampar) */
+    .topbar{
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: calc(10px + env(safe-area-inset-top)) 12px 10px;
+      display:flex; justify-content:center;
+      pointer-events:none;
+    }
+    .topbarInner{
+      pointer-events:auto;
+      width: min(var(--max), calc(100% - 20px));
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow2);
+      padding: 8px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 200px; }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(168,90,82,.14);
+    }
+    .brandTxt{ display:flex; flex-direction:column; line-height:1.1; }
+    .brandTxt b{ font-size: 13px; letter-spacing:.2px; }
+    .brandTxt span{ font-size: 12px; color: var(--muted); }
+
+    .actions{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.90);
+      color:var(--ink);
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:950;
+      font-size:13.5px;
+      box-shadow: var(--shadow2);
+      transition: transform .05s ease, border-color .2s ease, background .2s ease;
+      user-select:none;
+      white-space:nowrap;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{ border-color: rgba(168,90,82,.55); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:focus{ outline:none; box-shadow:0 0 0 4px var(--focus), var(--shadow2); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.calm{
+      background: linear-gradient(180deg, var(--calm), var(--calm2));
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.lav{
+      background: linear-gradient(180deg, #6a63b7, #5852a2);
+      border-color: transparent;
+      color:#fff;
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.66);
+      color: var(--muted);
+    }
+    .btn.icon{ padding:10px 12px; }
+
+    @media (max-width:760px){
+      .brandTxt span{ display:none; }
+      .btn.pdfTxt span{ display:none; }
+      .btn{ padding:10px 12px; }
+    }
+
+    /* Drawer menu */
+    .overlay{
+      position: fixed; inset: 0;
+      background: rgba(10,14,12,.33);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+    }
+    .overlay.on{ opacity:1; pointer-events:auto; }
+    .drawer{
+      position: fixed; top:0; right:0; height:100%;
+      width: min(420px, 92vw);
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(16px);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      z-index: 70;
+      transform: translateX(102%);
+      transition: transform .22s ease;
+      display:flex; flex-direction:column;
+      padding-top: env(safe-area-inset-top);
+    }
+    .drawer.on{ transform: translateX(0); }
+    .drawerHd{
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 20% 0%, rgba(168,90,82,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .drawerHd .row{ display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .drawerHd h3{ margin:0; font-size:14px; letter-spacing:.2px; }
+    .drawerHd p{ margin:8px 0 0; color: var(--muted); font-size:13.2px; }
+    .drawerBd{
+      padding: 12px 16px 16px;
+      display:grid; gap:10px;
+      overflow:auto;
+    }
+    .navItem{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.90);
+      box-shadow: var(--shadow2);
+      padding: 12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .navItem b{ display:block; }
+    .navItem span{ display:block; margin-top:4px; color: var(--muted); font-size:13px; }
+    .navItem:hover{ border-color: rgba(168,90,82,.45); }
+
+    /* Conteúdo */
+    section[id]{ scroll-margin-top: calc(var(--headerH) + env(safe-area-inset-top) + 14px); }
+
+    .hero{
+      border:1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-60px -50px auto auto;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle at 35% 35%, rgba(168,90,82,.18), transparent 62%);
+      filter: blur(1px);
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:12px;
+      align-items:center;
+    }
+    @media (max-width:920px){ .heroGrid{ grid-template-columns: 1fr; } }
+
+    .hero h1{ margin:0; font-size: 22px; letter-spacing:-.3px; }
+    .hero p{ margin: 8px 0 0; color: var(--muted); max-width: 96ch; font-size: 14.2px; }
+
+    .chips{ margin-top:12px; display:flex; flex-wrap:wrap; gap:8px; }
+    .chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding: 7px 10px;
+      background: rgba(255,255,255,.90);
+      color: var(--muted);
+      font-size: 12.8px;
+      box-shadow: var(--shadow2);
+      user-select:none;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background: var(--paper2);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .hd{
+      padding:14px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:
+        radial-gradient(650px 240px at 15% 0%, rgba(168,90,82,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.82));
+    }
+    .hd h2{ margin:0; font-size:15px; letter-spacing:.2px; }
+    .meta{ margin-top:6px; font-size:13.4px; color:var(--muted); max-width: 96ch; }
+    .bd{ padding:14px; }
+
+    .grid2{ display:grid; gap:12px; grid-template-columns: 1fr 1fr; }
+    @media (max-width:920px){ .grid2{ grid-template-columns: 1fr; } }
+
+    .panel{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      border-radius: var(--r2);
+      padding:12px;
+      box-shadow: var(--shadow2);
+    }
+    .panel h3{ margin:0 0 8px; font-size:14px; letter-spacing:.15px; }
+    .small{ font-size:13px; color:var(--muted); }
+
+    label{ display:block; font-weight:950; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input, select, textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      padding:12px;
+      font: 14px/1.25 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:#fff;
+      color:var(--ink);
+      box-shadow: var(--shadow2);
+    }
+    textarea{
+      min-height: 190px;
+      font: 13.5px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    input:focus, select:focus, textarea:focus{ outline:none; box-shadow:0 0 0 4px var(--focus); }
+
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,248,244,.75);
+      color: var(--muted);
+      font-size:13.4px;
+    }
+
+    .pickGrid{
+      display:grid;
+      gap:10px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+    @media (max-width:760px){ .pickGrid{ grid-template-columns: 1fr; } }
+
+    .pick{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background:#fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      cursor:pointer;
+      user-select:none;
+      transition: border-color .2s ease, transform .05s ease;
+    }
+    .pick:hover{ border-color: rgba(168,90,82,.45); }
+    .pick:active{ transform: translateY(1px); }
+    .pick input{
+      width:auto; box-shadow:none; margin-top:3px;
+      transform:scale(1.12); accent-color: var(--accent);
+    }
+    .pick b{ display:block; }
+    .pick span{ display:block; color:var(--muted); font-size:13px; margin-top:4px; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      font-weight:950;
+      font-size:12.5px;
+      border:1px solid rgba(0,0,0,.06);
+      background:#fff;
+      color: var(--muted);
+      width: fit-content;
+      user-select:none;
+    }
+    .bOk{ background: var(--okBg); border-color: var(--okLine); color: var(--okInk); }
+    .bMid{ background: var(--midBg); border-color: var(--midLine); color: var(--midInk); }
+    .bTalk{ background: var(--talkBg); border-color: var(--talkLine); color: var(--talkInk); }
+
+    .footer{
+      margin-top:12px;
+      display:flex;
+      justify-content:flex-start;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .resultBox{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      box-shadow: var(--shadow2);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .block{
+      border:1px solid rgba(220,210,202,.70);
+      border-radius: 14px;
+      background: rgba(255,248,244,.58);
+      padding:10px;
+    }
+    .block b{ display:block; }
+    .block .small{ margin-top:4px; }
+
+    .ctaFinal{
+      margin-top:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.86);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .fine{
+      margin-top:12px;
+      color: var(--muted2);
+      font-size: 13.2px;
+    }
+
+    .illu{
+      border:1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(255,255,255,.86);
+      box-shadow: var(--shadow2);
+      padding:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height: 170px;
+    }
+    svg{ max-width:100%; height:auto; }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="topbar">
+    <div class="topbarInner" id="topbarInner">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brandTxt">
+          <b>Manual da VidA · FASE 0</b>
+          <span>Relações: conversar sem conflito</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn icon" id="btnMenu" type="button" aria-haspopup="dialog" aria-controls="drawer" aria-expanded="false">☰ <span>Menu</span></button>
+        <button class="btn primary pdfTxt" id="btnPDFTop" type="button">⬇️ <span>PDF do dia</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawerHd">
+      <div class="row">
+        <h3>Navegação</h3>
+        <button class="btn ghost icon" id="btnCloseMenu" type="button">✕</button>
+      </div>
+      <p>Escolha uma sessão. O menu fecha e você cai no ponto certo.</p>
+    </div>
+    <div class="drawerBd">
+      <div class="navItem" data-go="start">
+        <b>Início</b>
+        <span>O que é + como usar.</span>
+      </div>
+      <div class="navItem" data-go="q">
+        <b>1) Questionário</b>
+        <span>Estado + cenário + pedido.</span>
+      </div>
+      <div class="navItem" data-go="res">
+        <b>2) Resultado</b>
+        <span>Frases prontas + guia.</span>
+      </div>
+      <div class="navItem" data-go="summary">
+        <b>Resumo + PDF</b>
+        <span>Texto pronto + baixar PDF.</span>
+      </div>
+      <div class="navItem" id="navPdf">
+        <b>Baixar PDF agora</b>
+        <span>Exporta resultado e resumo.</span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero" id="start">
+      <div class="heroGrid">
+        <div>
+          <h1>FASE 0 — Relações — Conversar sem conflito durante oscilações de humor</h1>
+          <p>
+            Um kit prático para transformar “estou diferente e nem sei explicar” em
+            <b>palavras curtas, seguras e sem acusação</b>.
+            Você escolhe seu estado de hoje + o cenário, e recebe:
+            <b>frase para falar agora</b>, <b>mensagem pronta</b>, <b>pedido claro</b> e
+            um <b>mini-guia</b> para a outra pessoa ajudar sem piorar.
+          </p>
+
+          <div class="chips">
+            <span class="chip">Sem terapia</span>
+            <span class="chip">Sem gatilho</span>
+            <span class="chip">Frases curtas</span>
+            <span class="chip">PDF 1–2 páginas</span>
+          </div>
+
+          <div class="hint">
+            Limite: não é diagnóstico e não substitui acompanhamento. Se houver sofrimento intenso,
+            medo persistente ou sensação de “não consigo lidar”, <b>vale validar com profissional</b>
+            (sem alarme).
+          </div>
+        </div>
+
+        <div class="illu" aria-label="Ilustração de conversa calma">
+          <svg viewBox="0 0 520 300" role="img">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="1">
+                <stop offset="0" stop-color="rgba(168,90,82,.18)"/>
+                <stop offset="1" stop-color="rgba(75,143,123,.14)"/>
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="1">
+                <stop offset="0" stop-color="#a85a52"/>
+                <stop offset="1" stop-color="#8f4a43"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="500" height="280" rx="26" fill="url(#g1)" stroke="rgba(220,210,202,.9)"/>
+            <circle cx="170" cy="150" r="92" fill="rgba(255,255,255,.70)"/>
+            <circle cx="340" cy="150" r="92" fill="rgba(255,255,255,.62)"/>
+            <path d="M170 130 C200 105, 230 105, 260 130" fill="none" stroke="url(#g2)" stroke-width="10" stroke-linecap="round"/>
+            <path d="M260 170 C230 195, 200 195, 170 170" fill="none" stroke="rgba(75,143,123,.70)" stroke-width="10" stroke-linecap="round"/>
+            <rect x="232" y="82" width="70" height="46" rx="14" fill="rgba(255,255,255,.82)" stroke="rgba(220,210,202,.9)"/>
+            <rect x="232" y="172" width="92" height="46" rx="14" fill="rgba(255,255,255,.78)" stroke="rgba(220,210,202,.9)"/>
+            <circle cx="252" cy="104" r="5" fill="#a85a52"/>
+            <circle cx="268" cy="104" r="5" fill="#a85a52"/>
+            <circle cx="284" cy="104" r="5" fill="#a85a52"/>
+            <circle cx="252" cy="194" r="5" fill="#4b8f7b"/>
+            <circle cx="268" cy="194" r="5" fill="#4b8f7b"/>
+            <circle cx="284" cy="194" r="5" fill="#4b8f7b"/>
+            <text x="42" y="265" font-size="14" fill="rgba(88,96,102,.95)" font-family="system-ui, -apple-system, Segoe UI">
+              Objetivo: clareza + pedido simples (sem briga)
+            </text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUESTIONÁRIO -->
+    <section class="card" id="q">
+      <div class="hd">
+        <h2>1) Questionário (rápido)</h2>
+        <div class="meta">Marque o que descreve <b>hoje</b>. Depois clique em <b>Gerar resultado</b> (no final deste módulo).</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Contexto</h3>
+            <div class="grid2">
+              <div>
+                <label>Semana</label>
+                <input id="week" inputmode="numeric" placeholder="Ex.: 12"/>
+              </div>
+              <div>
+                <label>Data</label>
+                <input id="date" placeholder="Ex.: 18/02/2026"/>
+              </div>
+            </div>
+
+            <div style="height:10px;"></div>
+
+            <label>Cenário</label>
+            <select id="scene">
+              <option value="Parceiro(a)">Com o parceiro(a)</option>
+              <option value="Família">Com a família</option>
+              <option value="Alguém próximo">Com alguém próximo</option>
+            </select>
+
+            <div style="height:10px;"></div>
+
+            <label>Tom que você quer agora</label>
+            <select id="tone">
+              <option value="suave">Suave (mais acolhedor)</option>
+              <option value="direto">Direto (curto e objetivo)</option>
+              <option value="neutro">Neutro (sem emoção)</option>
+            </select>
+
+            <div class="hint">
+              Regra do produto: <b>frase curta + pedido claro</b>. Sem acusação, sem “lista de erros”.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Prévia do resultado</h3>
+            <div id="badge" class="badge bMid">Responda e gere o resultado (1 clique)</div>
+            <div id="preview" class="small" style="margin-top:10px;">
+              Você vai receber: 1 frase para falar agora + 1 mensagem pronta + 1 pedido claro + guia rápido.
+            </div>
+
+            <div class="footer">
+              <button class="btn" id="btnClear" type="button">Limpar</button>
+              <button class="btn ghost" id="btnGoRes" type="button">Ir para resultado</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Estado predominante hoje (escolha até 2)</h3>
+          <div class="pickGrid" id="stateGrid"></div>
+
+          <div style="height:12px;"></div>
+
+          <h3>O que você mais precisa agora (escolha 1)</h3>
+          <div class="pickGrid" id="needGrid" style="grid-template-columns: repeat(2, minmax(0,1fr));"></div>
+
+          <div style="height:12px;"></div>
+
+          <h3>Limite do dia (opcional)</h3>
+          <label class="small">Marque um limite simples para evitar conflito</label>
+          <select id="boundary">
+            <option value="">(opcional) escolher um limite</option>
+            <option value="Hoje eu preciso de menos perguntas.">Hoje eu preciso de menos perguntas.</option>
+            <option value="Hoje eu não consigo discutir agora.">Hoje eu não consigo discutir agora.</option>
+            <option value="Hoje eu preciso de silêncio por 20 minutos.">Hoje eu preciso de silêncio por 20 minutos.</option>
+            <option value="Hoje eu preciso de ajuda prática, não conselhos.">Hoje eu preciso de ajuda prática, não conselhos.</option>
+            <option value="Hoje eu preciso que você seja gentil nas palavras.">Hoje eu preciso que você seja gentil nas palavras.</option>
+          </select>
+
+          <!-- BOTÃO NO FINAL DO MÓDULO (usabilidade fluida) -->
+          <div class="footer">
+            <button class="btn primary" id="btnGen" type="button">Gerar resultado</button>
+            <button class="btn ghost" id="btnHintScroll" type="button">Ver resultado gerado</button>
+          </div>
+
+          <div class="hint">
+            Se marcar 3 estados, o sistema limita para 2 (para manter curto e útil).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADO -->
+    <section class="card" id="res">
+      <div class="hd">
+        <h2>2) Resultado (frases prontas)</h2>
+        <div class="meta">Isso é para usar <b>hoje</b>. Curto, seguro e sem aumentar tensão.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Frase para falar agora</h3>
+            <div id="sayNow" class="resultBox">
+              <div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>
+            </div>
+
+            <div class="footer">
+              <button class="btn calm" id="btnCopySay" type="button">Copiar frase</button>
+              <button class="btn ghost" id="btnGoSummary" type="button">Ir para resumo</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Mensagem pronta (WhatsApp)</h3>
+            <div id="msgReady" class="resultBox">
+              <div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>
+            </div>
+
+            <div class="footer">
+              <button class="btn lav" id="btnCopyMsg" type="button">Copiar mensagem</button>
+              <button class="btn primary" id="btnPDFMid" type="button">⬇ Baixar PDF</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="panel">
+          <h3>Guia rápido para a outra pessoa (sem infantilizar)</h3>
+          <div id="guide" class="resultBox">
+            <div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>
+          </div>
+        </div>
+
+        <div class="ctaFinal">
+          <div class="small">
+            Para não perder e não reexplicar depois, baixe o PDF do dia com o resultado completo:
+          </div>
+          <button class="btn primary" id="btnPDFFinal" type="button">Baixar PDF do dia</button>
+        </div>
+
+        <div class="fine">
+          Limite: não é terapia e não faz diagnóstico. Objetivo: reduzir conflito e aumentar clareza com frases seguras.
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUMO + PDF -->
+    <section class="card" id="summary">
+      <div class="hd">
+        <h2>Resumo do dia + PDF</h2>
+        <div class="meta">Registro curto para você copiar, salvar e usar de novo.</div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div class="panel">
+            <h3>Gerar resumo</h3>
+            <div class="footer" style="margin-top:0;">
+              <button class="btn primary" id="btnGenSummary" type="button">Gerar resumo do dia</button>
+              <button class="btn" id="btnCopyAll" type="button">Copiar resumo</button>
+              <button class="btn primary" id="btnPDFHere" type="button">⬇ Baixar PDF</button>
+            </div>
+
+            <div class="hint">
+              O PDF sai sem “texto estranho” (sem emojis e sem caracteres que quebram exportação).
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Resumo (copiável)</h3>
+            <textarea id="out" readonly placeholder="Clique em “Gerar resumo do dia”..."></textarea>
+          </div>
+        </div>
+
+        <div class="ctaFinal">
+          <div class="small">Reset total limpa tudo e volta ao topo.</div>
+          <button class="btn" id="btnResetAll" type="button">Resetar (voltar ao topo)</button>
+        </div>
+
+        <div class="fine">
+          Regra de verdade do Manual da Vida: se gerar ansiedade ou exigir persuasão, falhou. Este produto é só clareza e pedido simples.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    (function(){
+      // ===== Anti-overlap do header =====
+      const topbarInner = document.getElementById("topbarInner");
+      function setHeaderH(){
+        const r = topbarInner.getBoundingClientRect();
+        const pillH = Math.ceil(r.height + 22);
+        document.documentElement.style.setProperty("--headerH", pillH + "px");
+      }
+      setHeaderH();
+      window.addEventListener("resize", setHeaderH);
+      window.addEventListener("orientationchange", setHeaderH);
+      if(window.visualViewport){
+        window.visualViewport.addEventListener("resize", setHeaderH);
+        window.visualViewport.addEventListener("scroll", setHeaderH);
+      }
+      setTimeout(setHeaderH, 120);
+
+      // ===== Drawer =====
+      const overlay = document.getElementById("overlay");
+      const drawer  = document.getElementById("drawer");
+      const btnMenu = document.getElementById("btnMenu");
+      const btnCloseMenu = document.getElementById("btnCloseMenu");
+
+      function openMenu(){
+        overlay.hidden = false;
+        overlay.classList.add("on");
+        drawer.classList.add("on");
+        drawer.setAttribute("aria-hidden","false");
+        btnMenu.setAttribute("aria-expanded","true");
+        document.body.style.overflow = "hidden";
+      }
+      function closeMenu(){
+        overlay.classList.remove("on");
+        drawer.classList.remove("on");
+        drawer.setAttribute("aria-hidden","true");
+        btnMenu.setAttribute("aria-expanded","false");
+        document.body.style.overflow = "";
+        setTimeout(()=>{ overlay.hidden = true; }, 200);
+      }
+      btnMenu.addEventListener("click", ()=>{
+        const expanded = btnMenu.getAttribute("aria-expanded")==="true";
+        expanded ? closeMenu() : openMenu();
+      });
+      btnCloseMenu.addEventListener("click", closeMenu);
+      overlay.addEventListener("click", closeMenu);
+      window.addEventListener("keydown", (e)=>{ if(e.key==="Escape") closeMenu(); });
+
+      document.querySelectorAll(".navItem[data-go]").forEach(el=>{
+        el.addEventListener("click", ()=>{
+          const id = el.dataset.go;
+          closeMenu();
+          setTimeout(()=> document.getElementById(id).scrollIntoView({behavior:"smooth", block:"start"}), 60);
+        });
+      });
+      document.getElementById("navPdf").addEventListener("click", ()=>{
+        closeMenu();
+        setTimeout(()=> downloadPDF(), 80);
+      });
+
+      // ===== Defaults date =====
+      const dateEl = document.getElementById("date");
+      const weekEl = document.getElementById("week");
+      (function initDate(){
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        if(!dateEl.value) dateEl.value = `${dd}/${mm}/${yy}`;
+      })();
+
+      // ===== Data =====
+      const states = [
+        { id:"irritada",  title:"Irritação / impaciência", desc:"Tudo parece mais intenso. Pequenas coisas incomodam." },
+        { id:"choro",     title:"Choro fácil / sensibilidade", desc:"Emoção vem rápido. Não é “drama” — é sensibilidade." },
+        { id:"cansaco",   title:"Cansaço extremo", desc:"Baixa energia. Qualquer conversa vira esforço." },
+        { id:"silencio",  title:"Preciso de silêncio", desc:"Você quer presença sem conversa longa." },
+        { id:"sobrec",    title:"Sobrecarga / muita informação", desc:"Mente cheia. Explicar tudo piora." },
+        { id:"insegura",  title:"Insegurança / medo difuso", desc:"Você quer acolhimento e estabilidade, sem discussão." },
+        { id:"naoent",    title:"Sinto que não sou entendida", desc:"Você quer traduzir o que sente sem brigar." },
+        { id:"triste",    title:"Tristeza / desânimo", desc:"Você precisa de cuidado e gentileza nas palavras." }
+      ];
+
+      const needs = [
+        { id:"presenca", title:"Presença (ficar perto)", desc:"Sem tentar resolver, só estar junto." },
+        { id:"sil",      title:"Silêncio / pausa", desc:"Sem perguntas por um tempo." },
+        { id:"ajuda",    title:"Ajuda prática", desc:"Tarefa simples para aliviar sua carga." },
+        { id:"carinho",  title:"Carinho / toque", desc:"Abraço, mão, afeto discreto." },
+        { id:"validar",  title:"Validação", desc:"“Eu entendo” antes de qualquer conselho." },
+        { id:"espaco",   title:"Espaço com segurança", desc:"Você precisa ficar só sem virar abandono." }
+      ];
+
+      const stateGrid = document.getElementById("stateGrid");
+      const needGrid  = document.getElementById("needGrid");
+      const badge     = document.getElementById("badge");
+      const preview   = document.getElementById("preview");
+
+      const sceneEl = document.getElementById("scene");
+      const toneEl  = document.getElementById("tone");
+      const boundaryEl = document.getElementById("boundary");
+
+      const sayNow = document.getElementById("sayNow");
+      const msgReady = document.getElementById("msgReady");
+      const guide = document.getElementById("guide");
+      const out = document.getElementById("out");
+
+      function esc(s){
+        return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      }
+
+      function flashBadge(text, kind){
+        badge.textContent = text;
+        badge.classList.remove("bOk","bMid","bTalk");
+        if(kind==="OK") badge.classList.add("bOk");
+        else if(kind==="TALK") badge.classList.add("bTalk");
+        else badge.classList.add("bMid");
+      }
+
+      function renderPicks(){
+        stateGrid.innerHTML = states.map(s=>`
+          <label class="pick" for="st_${s.id}">
+            <input type="checkbox" id="st_${s.id}" data-state="${s.id}"/>
+            <div>
+              <b>${esc(s.title)}</b>
+              <span>${esc(s.desc)}</span>
+            </div>
+          </label>
+        `).join("");
+
+        needGrid.innerHTML = needs.map(n=>`
+          <label class="pick" for="nd_${n.id}">
+            <input type="radio" name="need" id="nd_${n.id}" value="${esc(n.id)}"/>
+            <div>
+              <b>${esc(n.title)}</b>
+              <span>${esc(n.desc)}</span>
+            </div>
+          </label>
+        `).join("");
+
+        stateGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=>{
+          chk.addEventListener("change", ()=>{
+            const sel = getSelectedStates();
+            if(sel.length > 2){
+              chk.checked = false;
+              flashBadge("Selecione no máximo 2 estados (para ficar útil e curto).", "MID");
+              return;
+            }
+            updatePreview();
+          });
+        });
+
+        needGrid.querySelectorAll('input[type="radio"]').forEach(r=>{
+          r.addEventListener("change", updatePreview);
+        });
+
+        sceneEl.addEventListener("change", updatePreview);
+        toneEl.addEventListener("change", updatePreview);
+        boundaryEl.addEventListener("change", updatePreview);
+      }
+
+      function getSelectedStates(){
+        const ids = [];
+        stateGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=>{
+          if(chk.checked) ids.push(chk.dataset.state);
+        });
+        return ids;
+      }
+
+      function getSelectedNeed(){
+        const r = needGrid.querySelector('input[name="need"]:checked');
+        return r ? r.value : "";
+      }
+
+      function updatePreview(){
+        const st = getSelectedStates().map(id=> states.find(x=>x.id===id).title);
+        const ndId = getSelectedNeed();
+        const nd = ndId ? needs.find(x=>x.id===ndId).title : "";
+        const sc = sceneEl.value;
+        const tone = toneEl.value;
+
+        if(st.length===0 && !ndId){
+          flashBadge("Responda e gere o resultado (1 clique)", "MID");
+          preview.textContent = "Você vai receber: frase agora + mensagem pronta + pedido claro + guia rápido.";
+          return;
+        }
+
+        flashBadge("Seleção pronta (clique em Gerar resultado)", "OK");
+        preview.innerHTML = `
+          <b>Estado:</b> ${esc(st.join(" + ") || "—")}<br/>
+          <b>Cenário:</b> ${esc(sc)} · <b>Tom:</b> ${esc(tone)}<br/>
+          <b>Pedido:</b> ${esc(nd || "—")}<br/>
+          <span class="small">Agora clique em <b>Gerar resultado</b> (no final do módulo).</span>
+        `;
+      }
+
+      renderPicks();
+      updatePreview();
+
+      // ===== Linguagem (geração) =====
+      function tonePack(tone){
+        if(tone === "direto"){
+          return {
+            opener: "Hoje eu não tô no meu melhor.",
+            notYou: "Não é sobre você.",
+            askLead: "O que eu preciso agora é:",
+            thanks: "Obrigada por me ajudar assim."
+          };
+        }
+        if(tone === "neutro"){
+          return {
+            opener: "Hoje eu estou mais sensível/cansada.",
+            notYou: "Isso não é pessoal.",
+            askLead: "Para eu ficar bem agora, eu preciso de:",
+            thanks: "Obrigada por respeitar isso."
+          };
+        }
+        return {
+          opener: "Hoje eu tô mais sensível e com pouca energia.",
+          notYou: "Não é culpa sua.",
+          askLead: "O que me ajuda agora é:",
+          thanks: "Obrigada por estar comigo desse jeito."
+        };
+      }
+
+      function needPhrase(needId){
+        const map = {
+          presenca: "você ficar perto, sem tentar resolver, só comigo.",
+          sil: "um pouco de silêncio por um tempo, sem perguntas.",
+          ajuda: "uma ajuda prática simples (uma tarefa) para aliviar minha cabeça.",
+          carinho: "um carinho/abraço discreto, sem conversa longa.",
+          validar: "você me validar primeiro (tipo: “eu entendo”), antes de sugerir algo.",
+          espaco: "um espaço com segurança: eu fico um pouco quieta e depois eu volto."
+        };
+        return map[needId] || "um apoio simples e calmo.";
+      }
+
+      function stateExplainer(stateIds){
+        const map = {
+          irritada: "Irritação na gestação costuma aumentar com cansaço, fome, desconforto físico e sobrecarga. Não é “maldade”: é pouco recurso.",
+          choro: "Choro fácil pode ser sensibilidade + vulnerabilidade do período. O objetivo aqui é acolher, não discutir razão.",
+          cansaco: "Cansaço extremo reduz tolerância a conversa longa. Conversa curta e ajuda prática funcionam melhor.",
+          silencio: "Necessidade de silêncio é um pedido de regulação. Presença sem perguntas costuma ajudar mais do que “por quê?”.",
+          sobrec: "Sobrecarga faz qualquer conversa virar ruído. Um plano simples (uma coisa de cada vez) reduz atrito.",
+          insegura: "Medo difuso pede previsibilidade e gentileza. Discussão vira ameaça — melhor acolher e estabilizar.",
+          naoent: "Sentir-se não entendida aumenta quando você precisa explicar demais. Frase curta + pedido claro reduz conflito.",
+          triste: "Tristeza pede cuidado nas palavras e pouco julgamento. A ajuda aqui é presença e validação."
+        };
+        return stateIds.map(id=> map[id]).filter(Boolean);
+      }
+
+      function boundaryLine(txt){
+        if(!txt) return "";
+        return "Limite do dia: " + txt;
+      }
+
+      function buildResult(){
+        const stateIds = getSelectedStates();
+        const needId = getSelectedNeed();
+        const sc = sceneEl.value;
+        const tone = toneEl.value;
+        const boundary = (boundaryEl.value || "").trim();
+
+        if(stateIds.length === 0 || !needId){
+          flashBadge("Selecione 1–2 estados e 1 pedido (para gerar).", "MID");
+          return null;
+        }
+
+        const tp = tonePack(tone);
+        const stTitles = stateIds.map(id=> states.find(x=>x.id===id).title);
+
+        // Frase agora (fala)
+        const now = [
+          `${tp.opener} ${tp.notYou}`,
+          `${tp.askLead} ${needPhrase(needId)}`,
+          boundary ? boundary : "",
+          tp.thanks
+        ].filter(Boolean).join(" ");
+
+        // Mensagem pronta (WhatsApp) — mais “formatada”
+        const msg = [
+          `Oi. ${tp.opener} ${tp.notYou}`,
+          ``,
+          `O que me ajuda agora: ${needPhrase(needId)}`,
+          boundary ? `\n${boundaryLine(boundary)}` : "",
+          ``,
+          `Isso não é briga nem alarme — é só um atalho pra eu me regular.`,
+          tp.thanks
+        ].filter(Boolean).join("\n");
+
+        // Guia para a outra pessoa (sem infantilizar)
+        const guideLines = [
+          "Como ajudar (guia rápido):",
+          "- 1) Comece validando: “Entendi. Tô aqui.”",
+          "- 2) Evite perguntas em sequência (vira interrogatório).",
+          "- 3) Não tente resolver rápido com conselho.",
+          `- 4) Faça o pedido dela: ${needs.find(x=>x.id===needId).title}.`,
+          boundary ? `- 5) Respeite o limite combinado: ${boundary}` : "- 5) Se surgir tensão, proponha pausa curta e retomar depois.",
+          "",
+          "O que NÃO fazer agora:",
+          "- Ironia, cobrança, “você sempre…”, “você nunca…”.",
+          "- Discutir lógica do sentimento.",
+          "- Transformar o momento em “DR completa”."
+        ].join("\n");
+
+        // Tradução emocional (para ela) — bloco curto
+        const explain = stateExplainer(stateIds);
+
+        // Render
+        sayNow.innerHTML = `
+          <div class="block">
+            <b>Use assim (fala):</b>
+            <div class="small" style="margin-top:6px; white-space:pre-wrap;">${esc(now)}</div>
+          </div>
+          <div class="block">
+            <b>Tradução (para você):</b>
+            <div class="small" style="margin-top:6px;">
+              ${esc("Estados selecionados: " + stTitles.join(" + "))}<br/>
+              ${esc(explain[0] || "Você está com pouco recurso hoje. A meta é clareza e pedido simples, não “resolver tudo”.")}
+            </div>
+          </div>
+        `;
+
+        msgReady.innerHTML = `
+          <div class="block">
+            <b>WhatsApp (copiar e colar):</b>
+            <div class="small" style="margin-top:6px; white-space:pre-wrap;">${esc(msg)}</div>
+          </div>
+        `;
+
+        guide.innerHTML = `
+          <div class="block">
+            <b>Para mostrar / enviar:</b>
+            <div class="small" style="margin-top:6px; white-space:pre-wrap;">${esc(guideLines)}</div>
+          </div>
+          ${explain.length > 1 ? `
+            <div class="block">
+              <b>Observação extra (neutra):</b>
+              <div class="small" style="margin-top:6px;">${esc(explain.slice(1).join(" "))}</div>
+            </div>
+          ` : ``}
+        `;
+
+        flashBadge("Resultado gerado (pronto para usar)", "OK");
+
+        // Também gera um resumo interno
+        const summary = genSummaryInternal({ stTitles, sc, tone, needId, boundary, now, msg, guideLines, explain });
+        return { now, msg, guideLines, summary };
+      }
+
+      function genSummaryInternal(payload){
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+        const sc = payload.sc;
+        const tone = payload.tone;
+
+        const needTitle = needs.find(x=>x.id===payload.needId).title;
+
+        const lines = [];
+        lines.push("RESUMO — Manual da VidA (FASE 0 — Gestação)");
+        lines.push("Produto: Relações — Conversar sem conflito durante oscilações de humor");
+        lines.push(`Data: ${date || "—"}   |   Semana: ${week || "—"}`);
+        lines.push(`Cenário: ${sc}   |   Tom: ${tone}`);
+        lines.push("");
+        lines.push("Estados do dia:");
+        payload.stTitles.forEach(t=> lines.push("- " + t));
+        lines.push("");
+        lines.push("Pedido principal:");
+        lines.push("- " + needTitle);
+        if(payload.boundary) lines.push("- Limite do dia: " + payload.boundary);
+        lines.push("");
+        lines.push("Frase para falar agora:");
+        lines.push(payload.now);
+        lines.push("");
+        lines.push("Mensagem pronta (WhatsApp):");
+        lines.push(payload.msg);
+        lines.push("");
+        lines.push("Guia rápido para a outra pessoa:");
+        lines.push(payload.guideLines);
+        lines.push("");
+        lines.push("Tradução (neutra):");
+        (payload.explain||[]).forEach(x=> lines.push("- " + x));
+        lines.push("");
+        lines.push("Limite: não é terapia/diagnóstico. Objetivo: reduzir conflito e aumentar clareza com pedido simples.");
+        return lines.join("\n");
+      }
+
+      // ===== Buttons =====
+      let last = null;
+
+      document.getElementById("btnGen").addEventListener("click", ()=>{
+        last = buildResult();
+        if(last){
+          document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+        }
+      });
+
+      document.getElementById("btnHintScroll").addEventListener("click", ()=>{
+        document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnGoRes").addEventListener("click", ()=>{
+        document.getElementById("res").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnGoSummary").addEventListener("click", ()=>{
+        document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnClear").addEventListener("click", ()=>{
+        stateGrid.querySelectorAll('input[type="checkbox"]').forEach(chk=> chk.checked=false);
+        needGrid.querySelectorAll('input[type="radio"]').forEach(r=> r.checked=false);
+        boundaryEl.value = "";
+        updatePreview();
+        sayNow.innerHTML = `<div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>`;
+        msgReady.innerHTML = `<div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>`;
+        guide.innerHTML = `<div class="small">Gere o resultado no Módulo 1 para aparecer aqui.</div>`;
+        out.value = "";
+        last = null;
+        flashBadge("Responda e gere o resultado (1 clique)", "MID");
+      });
+
+      function copyText(txt, btn){
+        const text = (txt||"").trim();
+        if(!text) return;
+        navigator.clipboard.writeText(text).then(()=>{
+          const old = btn.textContent;
+          btn.textContent = "Copiado";
+          setTimeout(()=> btn.textContent = old, 900);
+        }).catch(()=>{
+          // fallback
+          out.value = text;
+          out.focus(); out.select(); document.execCommand("copy");
+        });
+      }
+
+      document.getElementById("btnCopySay").addEventListener("click", ()=>{
+        const t = sayNow.innerText || "";
+        copyText(t, document.getElementById("btnCopySay"));
+      });
+
+      document.getElementById("btnCopyMsg").addEventListener("click", ()=>{
+        const t = msgReady.innerText || "";
+        copyText(t, document.getElementById("btnCopyMsg"));
+      });
+
+      document.getElementById("btnGenSummary").addEventListener("click", ()=>{
+        if(!last){
+          last = buildResult();
+          if(!last) return;
+        }
+        out.value = last.summary || "";
+        document.getElementById("summary").scrollIntoView({behavior:"smooth", block:"start"});
+      });
+
+      document.getElementById("btnCopyAll").addEventListener("click", ()=>{
+        const txt = (out.value||"").trim();
+        if(!txt) return;
+        copyText(txt, document.getElementById("btnCopyAll"));
+      });
+
+      // ===== PDF (sem texto estranho) =====
+      function pdfSafe(text){
+        if(text == null) return "";
+        let s = String(text);
+
+        // remove emojis / variações que quebram render
+        s = s.replace(/[\u{1F300}-\u{1FAFF}]/gu, "");
+        s = s.replace(/[\uFE0E\uFE0F]/g, "");
+        s = s.replace(/[\u200D]/g, "");
+
+        // normalizações
+        s = s.replace(/[×]/g, "x");
+        s = s.replace(/[—–]/g, "-");
+        s = s.replace(/[“”]/g, '"');
+        s = s.replace(/[’]/g, "'");
+        s = s.replace(/[•]/g, "-");
+
+        // limpa espaçamento
+        s = s.replace(/\r/g, "");
+        s = s.replace(/[ \t]+\n/g, "\n").replace(/\n[ \t]+/g, "\n");
+        return s;
+      }
+
+      function pdfHeader(doc, pageW, margin){
+        doc.setFillColor(255, 247, 242);
+        doc.rect(0,0,pageW,26,"F");
+        doc.setFont("helvetica","bold");
+        doc.setTextColor(26,26,31);
+        doc.setFontSize(13.5);
+        doc.text("FASE 0 - Relacoes: conversar sem conflito", margin, 12);
+        doc.setFont("helvetica","normal");
+        doc.setTextColor(88,96,102);
+        doc.setFontSize(9.6);
+        doc.text("Frases prontas + pedido claro (nao e terapia/diagnostico).", margin, 18);
+      }
+
+      function newPage(doc){
+        doc.addPage();
+        const pageW = doc.internal.pageSize.getWidth();
+        pdfHeader(doc, pageW, 14);
+        return 32;
+      }
+
+      function writeParagraph(doc, text, x, y, maxW, lineH, bottomY){
+        const lines = doc.splitTextToSize(pdfSafe(text), maxW);
+        for(const ln of lines){
+          if(y + lineH > bottomY) y = newPage(doc);
+          doc.text(ln, x, y);
+          y += lineH;
+        }
+        return y;
+      }
+
+      function sectionTitle(doc, title, x, y, bottomY){
+        if(y + 8 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","bold");
+        doc.setFontSize(12);
+        doc.setTextColor(26,26,31);
+        doc.text(pdfSafe(title), x, y);
+        return y + 6;
+      }
+
+      function downloadPDF(){
+        if(!window.jspdf || !window.jspdf.jsPDF){
+          alert("Falha ao carregar biblioteca de PDF (jsPDF). Verifique sua conexão e recarregue a página.");
+          return;
+        }
+
+        if(!last){
+          last = buildResult();
+          if(!last) return;
+        }
+        if(!(out.value||"").trim()){
+          out.value = last.summary || "";
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit:"mm", format:"a4" });
+
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const margin = 14;
+        const x = margin;
+        const maxW = pageW - margin*2;
+        const bottomY = pageH - 14;
+
+        pdfHeader(doc, pageW, margin);
+        let y = 32;
+
+        const week = (weekEl.value||"").trim();
+        const date = (dateEl.value||"").trim();
+        const sc   = sceneEl.value;
+        const tone = toneEl.value;
+
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        doc.setTextColor(26,26,31);
+        y = writeParagraph(doc, `Data: ${date || "-"}   |   Semana: ${week || "-"}   |   Cenário: ${sc}   |   Tom: ${tone}`, x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Frase para falar agora", x, y, bottomY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        y = writeParagraph(doc, (last.now||"").trim(), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Mensagem pronta (WhatsApp)", x, y, bottomY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        y = writeParagraph(doc, (last.msg||"").trim(), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Guia rapido para a outra pessoa", x, y, bottomY);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(10);
+        y = writeParagraph(doc, (last.guideLines||"").trim(), x, y, maxW, 5, bottomY);
+        y += 2;
+
+        y = sectionTitle(doc, "Resumo do dia (registro)", x, y, bottomY);
+        doc.setFont("courier","normal");
+        doc.setFontSize(9.2);
+        y = writeParagraph(doc, (out.value||"").trim(), x, y, maxW, 4.6, bottomY);
+
+        if(y + 10 > bottomY) y = newPage(doc);
+        doc.setFont("helvetica","normal");
+        doc.setFontSize(9);
+        doc.setTextColor(116,128,138);
+        doc.text("Limite: nao e terapia/diagnostico. Objetivo: reduzir conflito com frase curta + pedido claro.", x, bottomY);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+        doc.save(`FASE0_Relacoes_ConversaSemConflito_${stamp}.pdf`);
+      }
+
+      document.getElementById("btnPDFTop").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFMid").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFHere").addEventListener("click", downloadPDF);
+      document.getElementById("btnPDFFinal").addEventListener("click", downloadPDF);
+
+      // ===== Reset total =====
+      document.getElementById("btnResetAll").addEventListener("click", ()=>{
+        document.getElementById("btnClear").click();
+        weekEl.value = "";
+        window.scrollTo({top:0, behavior:"smooth"});
+      });
+
+    })();
+  </script>
+</body>
+</html>
